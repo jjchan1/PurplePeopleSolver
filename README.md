@@ -1,5 +1,5 @@
-# RubiksCubeSolver
-<img src = "https://smhttp-ssl-62406.nexcesscdn.net/img/logo.png" alt="You can do the Rubik's cube!">
+# PurplePeopleSolver
+<img src = "https://smhttp-ssl-62406.nexcesscdn.net/img/logo.png">
 
 ## Project Overview
 Authors: Jonathan Chan, Vivian Yung
