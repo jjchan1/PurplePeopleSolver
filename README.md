@@ -1,5 +1,5 @@
 # PurplePeopleSolver
-<img src = "https://smhttp-ssl-62406.nexcesscdn.net/img/logo.png">
+<img src = "https://azscitech.com//wp-content/uploads/2014/05/rubikslogo.jpg">
 
 ## Project Overview
 Authors: Jonathan Chan, Vivian Yung
