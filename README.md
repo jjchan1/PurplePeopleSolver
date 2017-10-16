@@ -1,4 +1,4 @@
-# PurplePeopleSolver
+# RubiksCubeSolver
 <img src = "https://azscitech.com//wp-content/uploads/2014/05/rubikslogo.jpg">
 
 ## Project Overview
