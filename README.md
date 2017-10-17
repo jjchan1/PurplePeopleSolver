@@ -3,6 +3,7 @@
 
 ## Project Overview
 Authors: Jonathan Chan, Vivian Yung
+
 http://bit.ly/2ypoYC6
 
 __Project Goals:__
