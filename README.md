@@ -3,6 +3,7 @@
 
 ## Project Overview
 Authors: Jonathan Chan, Vivian Yung
+http://bit.ly/2ypoYC6
 
 __Project Goals:__
 * To create a Rubik's cube solver in Haskell using native libraries
