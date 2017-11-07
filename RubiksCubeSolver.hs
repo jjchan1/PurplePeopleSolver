@@ -1,5 +1,6 @@
 import Prelude hiding (Left, Right)
 import System.Random
+import Data.List
 
 data Color
   = Blue | Green | Orange | Red | White | Yellow
@@ -307,24 +308,7 @@ solvedCube =
   (Front,[Orange,Orange,Orange,Orange,Orange,Orange,Orange,Orange,Orange]),
   (Back,[Red,Red,Red,Red,Red,Red,Red,Red,Red])]
 
--- randGen = 
---   let g = newStdGen in
-  -- take 10 $ (randomRs (0::Int, 11::Int) g)
-
-randGen = do
-  g <- newStdGen
-  print $ take 25 $ (randomRs (0::Int, 11::Int) g)
-
-myPureFunction :: Float -> Float
-myPureFunction x = 2 * x
-
-main :: IO ()
-main = do
-    -- num :: Float
-    num <- randomIO :: IO Float
-    -- This "extracts" the float from IO Float and binds it to the name num
-    print $ myPureFunction num
-
+getMove :: Int -> RubiksCube -> RubiksCube
 getMove num cube = 
   case num of 
     0 -> up cube
@@ -340,7 +324,12 @@ getMove num cube =
     10 -> back cube
     11 -> back' cube
 
-scramble cube = 
-  let randNums = randGen in
-  let s = foldl (\c n -> getMove n c) cube [0,2,4]
-  in s
+scramble :: RubiksCube -> IO RubiksCube
+scramble cube = do
+  seed <- newStdGen
+  let list = randomlist 25 seed
+  let s = foldl (\c n -> getMove n c) cube list
+  return s
+
+randomlist :: Int -> StdGen -> [Int]
+randomlist n = take n . unfoldr (Just . randomR(0, 11))
