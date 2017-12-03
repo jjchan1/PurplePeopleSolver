@@ -382,37 +382,37 @@ fixYellowEdges cube =
 
 fixFrontYellowEdges :: RubiksCube -> [Piece] -> RubiksCube
 fixFrontYellowEdges cube pieces 
+  | getNth 1 pieces == Yellow                        = fixFrontYellowEdges (yellowDownFaceEdgeElevationCase (skillfulTwist1 cube Front) Front) pieces
+  | getNth 3 pieces == Yellow                        = fixFrontYellowEdges (yellowDownFaceEdgeElevationCase (skillfulTwist3 cube Front) Front) pieces
+  | getNth 5 pieces == Yellow                        = fixFrontYellowEdges (yellowDownFaceEdgeElevationCase (skillfulTwist5 cube Front) Front) pieces  
   | getNth 7 pieces == Yellow                        = fixFrontYellowEdges (yellowFrontFaceEdgeElevationCase cube Front) pieces
-  | getNth 3 pieces == Yellow                        = fixFrontYellowEdges (yellowDownFaceEdgeElevationCase cube Front) pieces
-  | getNth 1 pieces == Yellow                        = fixFrontYellowEdges (yellowDownFaceEdgeElevationCase cube Front) pieces
-  | getNth 5 pieces == Yellow                        = fixFrontYellowEdges (yellowDownFaceEdgeElevationCase cube Front) pieces  
   | getNth 1 (getPieces(lookup Down cube)) == Yellow = fixFrontYellowEdges (yellowDownFaceEdgeElevationCase cube Front) pieces
   | otherwise                                        = cube
 
 fixRightYellowEdges :: RubiksCube -> [Piece] -> RubiksCube
 fixRightYellowEdges cube pieces 
+  | getNth 1 pieces == Yellow                        = fixRightYellowEdges (yellowDownFaceEdgeElevationCase (skillfulTwist1 cube Right) Right) pieces
+  | getNth 3 pieces == Yellow                        = fixRightYellowEdges (yellowDownFaceEdgeElevationCase (skillfulTwist3 cube Right) Right) pieces
+  | getNth 5 pieces == Yellow                        = fixRightYellowEdges (yellowDownFaceEdgeElevationCase (skillfulTwist5 cube Right) Right) pieces  
   | getNth 7 pieces == Yellow                        = fixRightYellowEdges (yellowFrontFaceEdgeElevationCase cube Right) pieces
-  | getNth 3 pieces == Yellow                        = fixRightYellowEdges (yellowDownFaceEdgeElevationCase cube Right) pieces
-  | getNth 1 pieces == Yellow                        = fixRightYellowEdges (yellowDownFaceEdgeElevationCase cube Right) pieces
-  | getNth 5 pieces == Yellow                        = fixRightYellowEdges (yellowDownFaceEdgeElevationCase cube Right) pieces  
   | getNth 5 (getPieces(lookup Down cube)) == Yellow = fixRightYellowEdges (yellowDownFaceEdgeElevationCase cube Right) pieces
   | otherwise                                        = cube
  
 fixLeftYellowEdges :: RubiksCube -> [Piece] -> RubiksCube
 fixLeftYellowEdges cube pieces 
+  | getNth 1 pieces == Yellow                        = fixLeftYellowEdges (yellowDownFaceEdgeElevationCase (skillfulTwist1 cube Left) Left) pieces
+  | getNth 3 pieces == Yellow                        = fixLeftYellowEdges (yellowDownFaceEdgeElevationCase (skillfulTwist3 cube Left) Left) pieces
+  | getNth 5 pieces == Yellow                        = fixLeftYellowEdges (yellowDownFaceEdgeElevationCase (skillfulTwist5 cube Left) Left) pieces  
   | getNth 7 pieces == Yellow                        = fixLeftYellowEdges (yellowFrontFaceEdgeElevationCase cube Left) pieces
-  | getNth 3 pieces == Yellow                        = fixLeftYellowEdges (yellowDownFaceEdgeElevationCase cube Left) pieces
-  | getNth 1 pieces == Yellow                        = fixLeftYellowEdges (yellowDownFaceEdgeElevationCase cube Left) pieces
-  | getNth 5 pieces == Yellow                        = fixLeftYellowEdges (yellowDownFaceEdgeElevationCase cube Left) pieces  
   | getNth 3 (getPieces(lookup Down cube)) == Yellow = fixLeftYellowEdges (yellowDownFaceEdgeElevationCase cube Left) pieces
   | otherwise                                        = cube 
 
 fixBackYellowEdges :: RubiksCube -> [Piece] -> RubiksCube 
 fixBackYellowEdges cube pieces  
+  | getNth 1 pieces == Yellow                        = fixBackYellowEdges (yellowDownFaceEdgeElevationCase (skillfulTwist1 cube Back) Back) pieces
+  | getNth 3 pieces == Yellow                        = fixBackYellowEdges (yellowDownFaceEdgeElevationCase (skillfulTwist3 cube Back) Back) pieces
+  | getNth 5 pieces == Yellow                        = fixBackYellowEdges (yellowDownFaceEdgeElevationCase (skillfulTwist5 cube Back) Back) pieces
   | getNth 7 pieces == Yellow                        = fixBackYellowEdges (yellowFrontFaceEdgeElevationCase cube Back) pieces
-  | getNth 3 pieces == Yellow                        = fixBackYellowEdges (yellowDownFaceEdgeElevationCase cube Back) pieces
-  | getNth 1 pieces == Yellow                        = fixBackYellowEdges (yellowDownFaceEdgeElevationCase cube Back) pieces
-  | getNth 5 pieces == Yellow                        = fixBackYellowEdges (yellowDownFaceEdgeElevationCase cube Back) pieces  
   | getNth 7 (getPieces(lookup Down cube)) == Yellow = fixBackYellowEdges (yellowDownFaceEdgeElevationCase cube Back) pieces
   | otherwise                                        = cube
 
@@ -421,17 +421,27 @@ fixBackYellowEdges cube pieces
   -- 1 -> frontFaceEdgeElevationCase cube (need to add in the down face)
   -- 2 -> downFaceEdgeElevationCase cube (need to add in the front face)
 
+skillfulTwist1 :: RubiksCube -> Side -> RubiksCube
+skillfulTwist1 cube side =
+  translateMove (translateMove cube side 8) side 8
+
+skillfulTwist3 :: RubiksCube -> Side -> RubiksCube
+skillfulTwist3 cube side =
+  translateMove (translateMove (translateMove cube side 4) side 2) side 5
+
+skillfulTwist5 :: RubiksCube -> Side -> RubiksCube
+skillfulTwist5 cube side =
+  translateMove (translateMove (translateMove cube side 7) side 3) side 6
+
 yellowFrontFaceEdgeElevationCase :: RubiksCube -> Side -> RubiksCube
 yellowFrontFaceEdgeElevationCase cube side = 
   let pieces = getPieces (lookup Down cube) in
-  -- 1 position might be wrong
-    if (getNth 1 pieces == getColorOfSide side) then (translateMove (translateMove (translateMove (translateMove cube side 3) side 6) side 9) side 7)
+    if (getNth 1 pieces == getColorOfSide side) then (translateMove (translateMove (translateMove (translateMove cube side 2) side 6) side 9) side 7)
     else (yellowFrontFaceEdgeElevationCase (down cube) side)
 
 yellowDownFaceEdgeElevationCase :: RubiksCube -> Side -> RubiksCube
 yellowDownFaceEdgeElevationCase cube side = 
   let pieces = getPieces (lookup side cube) in
-  -- needs translated front (front cube)
     if (getNth 7 pieces == getColorOfSide side) then (translateMove (translateMove cube side 8) side 8)
     else (yellowDownFaceEdgeElevationCase (down cube) side)
 
@@ -500,4 +510,17 @@ translateMove cube frontSide move =
       9  -> doMove 5 cube
       10 -> doMove 6 cube
       11 -> doMove 7 cube
+    Front -> case move of
+      0  -> doMove 0 cube
+      1  -> doMove 1 cube
+      2  -> doMove 2 cube
+      3  -> doMove 3 cube
+      4  -> doMove 4 cube
+      5  -> doMove 5 cube
+      6  -> doMove 6 cube
+      7  -> doMove 7 cube
+      8  -> doMove 8 cube
+      9  -> doMove 9 cube
+      10 -> doMove 10 cube
+      11 -> doMove 11 cube
        
