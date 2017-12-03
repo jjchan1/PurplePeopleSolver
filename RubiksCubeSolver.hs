@@ -19,9 +19,14 @@ type RubiksCube = [Face]
 -- Moves
 replaceNth :: Int -> Color -> [Color] -> [Color]
 replaceNth n newVal (x:xs)
-  | n == 0 = newVal:xs
+  | n == 0    = newVal:xs
   | otherwise = x:replaceNth (n-1) newVal xs
    
+getNth :: Int -> [Color] -> Color
+getNth n (x:xs) 
+  | n == 0    = x
+  | otherwise = getNth (n-1) xs
+
 moveThree :: Int -> Int -> Int -> Int -> Int -> Int -> [Color] -> [Color] -> [Color]
 moveThree s1 s2 s3 d1 d2 d3 src dst = 
   let a = replaceNth d1 (src!!s1) dst in
@@ -33,7 +38,7 @@ getPieces :: Maybe [Piece] -> [Piece]
 getPieces pieces =
   case pieces of
     Nothing -> []
-    Just p -> p
+    Just p  -> p
 
 up :: RubiksCube -> RubiksCube
 up cube = 
@@ -311,16 +316,16 @@ solvedCube =
 doMove :: Int -> RubiksCube -> RubiksCube
 doMove num cube = 
   case num of 
-    0 -> up cube
-    1 -> up' cube
-    2 -> down cube
-    3 -> down' cube
-    4 -> left cube
-    5 -> left' cube
-    6 -> right cube
-    7 -> right' cube
-    8 -> front cube
-    9 -> front' cube
+    0  -> up cube
+    1  -> up' cube
+    2  -> down cube
+    3  -> down' cube
+    4  -> left cube
+    5  -> left' cube
+    6  -> right cube
+    7  -> right' cube
+    8  -> front cube
+    9  -> front' cube
     10 -> back cube
     11 -> back' cube
 
@@ -333,3 +338,99 @@ scramble cube = do
 
 randomlist :: Int -> StdGen -> [Int]
 randomlist n = take n . unfoldr (Just . randomR(0, 11))
+
+-- solveYellowCross :: (RubiksCube, [Int]) -> (RubiksCube, [Int])
+-- solveYellowCross (cube, moves) = 
+
+
+checkCross :: RubiksCube -> Bool
+checkCross cube = 
+  let topPieces = getPieces (lookup Top cube) in
+    if ((getNth 1 topPieces == Yellow) &&
+        (getNth 3 topPieces == Yellow) &&
+        (getNth 5 topPieces == Yellow) &&
+        (getNth 7 topPieces == Yellow)) then True else False
+
+checkExtendedCross :: RubiksCube -> Bool
+checkExtendedCross cube = 
+  let frontPieces = getPieces (lookup Front cube) in
+    let rightPieces = getPieces (lookup Right cube) in
+      let leftPieces = getPieces (lookup Left cube) in
+        let backPieces = getPieces (lookup Back cube) in
+          if ((getNth 1 frontPieces == Orange) &&
+              (getNth 1 rightPieces == Blue) &&
+              (getNth 1 leftPieces == Green) &&
+              (getNth 1 backPieces == Red)) &&
+              (checkCross cube == True) then True else False
+
+edgeElevationAlgo :: RubiksCube -> Int -> RubiksCube
+edgeElevationAlgo cube option = case option of
+  -- 1 -> frontFrontDownEdgeRotation cube (need to add in the down face)
+  -- 2 -> downFrontDownEdgeRotation cube (need to add in the front face)
+
+frontFrontDownEdgeRotation :: RubiksCube -> Side -> RubiksCube
+frontFrontDownEdgeRotation cube side = 
+  let pieces = getPieces (lookup Down cube) in
+  -- 1 position might be wrong
+    if (getNth 1 pieces == getColorOfSide side) then (right' (front' (right (down cube))))
+    else (frontFrontDownEdgeRotation (down cube) side)
+
+downFrontDownEdgeRotation :: RubiksCube -> Side -> RubiksCube
+downFrontDownEdgeRotation cube side = 
+  let pieces = getPieces (lookup side cube) in
+  -- needs translated front (front cube)
+    if (getNth 7 pieces == getColorOfSide side) then (front (front cube))
+    else (downFrontDownEdgeRotation (down cube) side)
+
+getColorOfSide :: Side -> Color
+getColorOfSide side = case side of
+  Top   -> Yellow
+  Front -> Orange
+  Left  -> Green
+  Back  -> Red
+  Right -> Blue
+  Down  -> White
+
+translateMove :: RubiksCube -> Side -> Int -> RubiksCube
+translateMove cube frontSide move =
+  case frontSide of
+    Left -> case move of
+      0  -> doMove 0 cube
+      1  -> doMove 1 cube
+      2  -> doMove 2 cube
+      3  -> doMove 3 cube
+      4  -> doMove 8 cube
+      5  -> doMove 9 cube
+      6  -> doMove 10 cube
+      7  -> doMove 11 cube
+      8  -> doMove 6 cube
+      9  -> doMove 7 cube
+      10 -> doMove 4 cube
+      11 -> doMove 5 cube
+    Back -> case move of
+      0  -> doMove 0 cube
+      1  -> doMove 1 cube
+      2  -> doMove 2 cube
+      3  -> doMove 3 cube
+      4  -> doMove 6 cube
+      5  -> doMove 7 cube
+      6  -> doMove 4 cube
+      7  -> doMove 5 cube
+      8  -> doMove 10 cube
+      9  -> doMove 11 cube
+      10 -> doMove 8 cube
+      11 -> doMove 9 cube
+    Right -> case move of 
+      0  -> doMove 0 cube
+      1  -> doMove 1 cube
+      2  -> doMove 2 cube
+      3  -> doMove 3 cube
+      4  -> doMove 10 cube
+      5  -> doMove 11 cube
+      6  -> doMove 8 cube
+      7  -> doMove 9 cube
+      8  -> doMove 4 cube
+      9  -> doMove 5 cube
+      10 -> doMove 6 cube
+      11 -> doMove 7 cube
+       
