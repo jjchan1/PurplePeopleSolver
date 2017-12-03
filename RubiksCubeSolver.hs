@@ -382,7 +382,7 @@ fixYellowEdges cube =
 
 fixFrontYellowEdges :: RubiksCube -> [Piece] -> RubiksCube
 fixFrontYellowEdges cube pieces 
-  | getNth 1 pieces == Yellow                        = fixFrontYellowEdges (yellowDownFaceEdgeElevationCase (skillfulTwist1 cube Front) Front) pieces
+  | getNth 1 pieces == Yellow                        = fixFrontYellowEdges (yellowFrontFaceEdgeElevationCase (skillfulTwist1 cube Front) Front) pieces
   | getNth 3 pieces == Yellow                        = fixFrontYellowEdges (yellowDownFaceEdgeElevationCase (skillfulTwist3 cube Front) Front) pieces
   | getNth 5 pieces == Yellow                        = fixFrontYellowEdges (yellowDownFaceEdgeElevationCase (skillfulTwist5 cube Front) Front) pieces  
   | getNth 7 pieces == Yellow                        = fixFrontYellowEdges (yellowFrontFaceEdgeElevationCase cube Front) pieces
@@ -391,7 +391,7 @@ fixFrontYellowEdges cube pieces
 
 fixRightYellowEdges :: RubiksCube -> [Piece] -> RubiksCube
 fixRightYellowEdges cube pieces 
-  | getNth 1 pieces == Yellow                        = fixRightYellowEdges (yellowDownFaceEdgeElevationCase (skillfulTwist1 cube Right) Right) pieces
+  | getNth 1 pieces == Yellow                        = fixRightYellowEdges (yellowFrontFaceEdgeElevationCase (skillfulTwist1 cube Right) Right) pieces
   | getNth 3 pieces == Yellow                        = fixRightYellowEdges (yellowDownFaceEdgeElevationCase (skillfulTwist3 cube Right) Right) pieces
   | getNth 5 pieces == Yellow                        = fixRightYellowEdges (yellowDownFaceEdgeElevationCase (skillfulTwist5 cube Right) Right) pieces  
   | getNth 7 pieces == Yellow                        = fixRightYellowEdges (yellowFrontFaceEdgeElevationCase cube Right) pieces
@@ -400,7 +400,7 @@ fixRightYellowEdges cube pieces
  
 fixLeftYellowEdges :: RubiksCube -> [Piece] -> RubiksCube
 fixLeftYellowEdges cube pieces 
-  | getNth 1 pieces == Yellow                        = fixLeftYellowEdges (yellowDownFaceEdgeElevationCase (skillfulTwist1 cube Left) Left) pieces
+  | getNth 1 pieces == Yellow                        = fixLeftYellowEdges (yellowFrontFaceEdgeElevationCase (skillfulTwist1 cube Left) Left) pieces
   | getNth 3 pieces == Yellow                        = fixLeftYellowEdges (yellowDownFaceEdgeElevationCase (skillfulTwist3 cube Left) Left) pieces
   | getNth 5 pieces == Yellow                        = fixLeftYellowEdges (yellowDownFaceEdgeElevationCase (skillfulTwist5 cube Left) Left) pieces  
   | getNth 7 pieces == Yellow                        = fixLeftYellowEdges (yellowFrontFaceEdgeElevationCase cube Left) pieces
@@ -409,7 +409,7 @@ fixLeftYellowEdges cube pieces
 
 fixBackYellowEdges :: RubiksCube -> [Piece] -> RubiksCube 
 fixBackYellowEdges cube pieces  
-  | getNth 1 pieces == Yellow                        = fixBackYellowEdges (yellowDownFaceEdgeElevationCase (skillfulTwist1 cube Back) Back) pieces
+  | getNth 1 pieces == Yellow                        = fixBackYellowEdges (yellowFrontFaceEdgeElevationCase (skillfulTwist1 cube Back) Back) pieces
   | getNth 3 pieces == Yellow                        = fixBackYellowEdges (yellowDownFaceEdgeElevationCase (skillfulTwist3 cube Back) Back) pieces
   | getNth 5 pieces == Yellow                        = fixBackYellowEdges (yellowDownFaceEdgeElevationCase (skillfulTwist5 cube Back) Back) pieces
   | getNth 7 pieces == Yellow                        = fixBackYellowEdges (yellowFrontFaceEdgeElevationCase cube Back) pieces
