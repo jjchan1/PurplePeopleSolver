@@ -10,6 +10,9 @@ data Side
   = Back | Front | Down | Top | Left | Right
   deriving (Eq, Show)
 
+data Move
+  = U | U' | D | D' | L | L' | R | R' | F | F' | B | B'
+  deriving (Eq, Show)
 type Piece = Color
 
 type Face = (Side, [Piece])
@@ -344,10 +347,10 @@ solveYellowCross' cube = case checkExtendedCross cube of
   True -> cube
   False -> fixYellowEdges cube 
 
--- solveYellowCross :: (RubiksCube, [Int]) -> (RubiksCube, [Int])
--- solveYellowCross (cube, moves) = case checkExtendedCross cube of
---   True -> (cube, moves)
---   False -> fixYellowEdges cube (getPieces)
+solveYellowCross :: (RubiksCube, [Move]) -> (RubiksCube, [Move])
+solveYellowCross (cube, moves) = case checkExtendedCross cube of
+  True -> (cube, [])
+  False -> (fixYellowEdges cube, moves ++ [addMove Left 4])
 
 checkCross :: RubiksCube -> Bool
 checkCross cube = 
@@ -412,18 +415,22 @@ fixBackYellowEdges cube pieces
   | getNth 7 (getPieces(lookup Down cube)) == Yellow = fixBackYellowEdges (yellowDownFaceEdgeElevationCase cube Back) (getPieces (lookup Back (yellowDownFaceEdgeElevationCase cube Back)))
   | otherwise                                        = cube
 
+-- F, F
 skillfulTwist1 :: RubiksCube -> Side -> RubiksCube
 skillfulTwist1 cube side =
   translateMove (translateMove cube side 8) side 8
 
+-- L, D, L'
 skillfulTwist3 :: RubiksCube -> Side -> RubiksCube
 skillfulTwist3 cube side =
   translateMove (translateMove (translateMove cube side 4) side 2) side 5
 
+-- R', D', R
 skillfulTwist5 :: RubiksCube -> Side -> RubiksCube
 skillfulTwist5 cube side =
   translateMove (translateMove (translateMove cube side 7) side 3) side 6
 
+-- D, R, F', R'
 yellowFrontFaceEdgeElevationCase :: RubiksCube -> Side -> RubiksCube
 yellowFrontFaceEdgeElevationCase cube side = 
   let pieces = getPieces (lookup Down cube) in
@@ -437,6 +444,7 @@ yellowFrontFaceEdgeElevationCase cube side =
       Left  -> if (getNth 3 pieces == getColorOfSide side) then (translateMove (translateMove (translateMove (translateMove cube side 2) side 6) side 9) side 7)
                else (yellowFrontFaceEdgeElevationCase (down cube) Front)
 
+-- F, F
 yellowDownFaceEdgeElevationCase :: RubiksCube -> Side -> RubiksCube
 yellowDownFaceEdgeElevationCase cube side = 
   let pieces = getPieces (lookup side cube) in
@@ -449,20 +457,6 @@ yellowDownFaceEdgeElevationCase cube side =
                else (yellowDownFaceEdgeElevationCase (down cube) Left)
       Left  -> if (getNth 7 pieces == getColorOfSide side) then (translateMove (translateMove cube side 8) side 8)
                else (yellowDownFaceEdgeElevationCase (down cube) Front)
-
--- yellowFrontFaceEdgeElevationCase :: RubiksCube -> Side -> RubiksCube
--- yellowFrontFaceEdgeElevationCase cube side = 
---   let pieces = getPieces (lookup Down cube) in
---   -- 1 position might be wrong
---     if (getNth 1 pieces == getColorOfSide side) then (right' (front' (right (down cube))))
---     else (yellowFrontFaceEdgeElevationCase (down cube) side)
-
--- yellowDownFaceEdgeElevationCase :: RubiksCube -> Side -> RubiksCube
--- yellowDownFaceEdgeElevationCase cube side = 
---   let pieces = getPieces (lookup side cube) in
---   -- needs translated front (front cube)
---     if (getNth 7 pieces == getColorOfSide side) then (front (front cube))
---     else (yellowDownFaceEdgeElevationCase (down cube) side)
 
 getColorOfSide :: Side -> Color
 getColorOfSide side = case side of
@@ -529,3 +523,58 @@ translateMove cube frontSide move =
       10 -> doMove 10 cube
       11 -> doMove 11 cube
        
+addMove :: Side -> Int -> Move
+addMove frontSide move = 
+  case frontSide of
+    Right -> case move of
+      0  -> U
+      1  -> U'
+      2  -> D
+      3  -> D'
+      4  -> F
+      5  -> F'
+      6  -> B
+      7  -> B'
+      8  -> R
+      9  -> R'
+      10 -> L
+      11 -> L'
+    Back -> case move of
+      0  -> U
+      1  -> U'
+      2  -> D
+      3  -> D'
+      4  -> R
+      5  -> R'
+      6  -> L
+      7  -> L'
+      8  -> B
+      9  -> B'
+      10 -> F
+      11 -> F'
+    Left -> case move of 
+      0  -> U
+      1  -> U'
+      2  -> D
+      3  -> D'
+      4  -> B
+      5  -> B'
+      6  -> F
+      7  -> F'
+      8  -> L
+      9  -> L'
+      10 -> R
+      11 -> R'
+    Front -> case move of
+      0  -> U
+      1  -> U'
+      2  -> D
+      3  -> D'
+      4  -> L
+      5  -> L'
+      6  -> R
+      7  -> R'
+      8  -> F
+      9  -> F'
+      10 -> B
+      11 -> B'
