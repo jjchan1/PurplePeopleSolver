@@ -380,7 +380,6 @@ fixYellowEdges cube =
               let cube''' = fixLeftYellowEdges cube'' leftPieces in
                 fixBackYellowEdges cube''' backPieces
 
--- "Fixes" all instances of yellow edges
 fixFrontYellowEdges :: RubiksCube -> [Piece] -> RubiksCube
 fixFrontYellowEdges cube pieces 
   | getNth 7 pieces == Yellow                        = fixFrontYellowEdges (yellowFrontFaceEdgeElevationCase cube Front) pieces
