@@ -424,7 +424,6 @@ skillfulTwist5 :: RubiksCube -> Side -> RubiksCube
 skillfulTwist5 cube side =
   translateMove (translateMove (translateMove cube side 7) side 3) side 6
 
--- needs new side after turning
 yellowFrontFaceEdgeElevationCase :: RubiksCube -> Side -> RubiksCube
 yellowFrontFaceEdgeElevationCase cube side = 
   let pieces = getPieces (lookup Down cube) in
@@ -438,7 +437,6 @@ yellowFrontFaceEdgeElevationCase cube side =
       Left  -> if (getNth 3 pieces == getColorOfSide side) then (translateMove (translateMove (translateMove (translateMove cube side 2) side 6) side 9) side 7)
                else (yellowFrontFaceEdgeElevationCase (down cube) Front)
 
--- needs new side after turning
 yellowDownFaceEdgeElevationCase :: RubiksCube -> Side -> RubiksCube
 yellowDownFaceEdgeElevationCase cube side = 
   let pieces = getPieces (lookup side cube) in
@@ -478,7 +476,7 @@ getColorOfSide side = case side of
 translateMove :: RubiksCube -> Side -> Int -> RubiksCube
 translateMove cube frontSide move =
   case frontSide of
-    Left -> case move of
+    Right -> case move of
       0  -> doMove 0 cube
       1  -> doMove 1 cube
       2  -> doMove 2 cube
@@ -504,7 +502,7 @@ translateMove cube frontSide move =
       9  -> doMove 11 cube
       10 -> doMove 8 cube
       11 -> doMove 9 cube
-    Right -> case move of 
+    Left -> case move of 
       0  -> doMove 0 cube
       1  -> doMove 1 cube
       2  -> doMove 2 cube
