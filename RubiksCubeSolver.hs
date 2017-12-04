@@ -791,3 +791,44 @@ fixMiddleLayer (cube, moves) =
     let (cube'', moves'') = fixRightMiddleLayer (cube', moves') (getPieces (lookup Right cube')) in
       let (cube''', moves''') = fixLeftMiddleLayer (cube'', moves'') (getPieces (lookup Left cube'')) in
         fixBackMiddleLayer (cube''', moves''') (getPieces (lookup Back cube'''))
+
+fixFrontMiddleLayer :: (VJRubiksCube, [Move]) -> [Piece] -> (VJRubiksCube, [Move])
+fixFrontMiddleLayer (cube, moves) pieces 
+  | getNth 7 pieces                        /= getColorOfSide Bottom && (getNth 1 (getPieces(lookup Bottom cube)) /= getColorOfSide Bottom) = fixFrontMiddleLayer (fixMiddleLayerOrientation cube Front) (getPieces (lookup Front (fst (fixMiddleLayerOrientation cube Front))))
+  -- | getNth 2 pieces                        == getColorOfSide Top = fixFrontTopCorners (rightCornerLiftingCase (skillfulTwist2 (cube, moves) Front) Front) (getPieces (lookup Front (fst (rightCornerLiftingCase (skillfulTwist2 (cube, moves) Front) Front))))
+  -- | getNth 6 pieces                        == getColorOfSide Top = fixFrontTopCorners (leftCornerLiftingCase (cube, moves) Front) (getPieces (lookup Front (fst (leftCornerLiftingCase (cube, moves) Front))))
+  -- | getNth 8 pieces                        == getColorOfSide Top = fixFrontTopCorners (rightCornerLiftingCase (cube, moves) Front) (getPieces (lookup Front (fst (rightCornerLiftingCase (cube, moves) Front))))
+  -- | getNth 0 (getPieces(lookup Down cube)) == getColorOfSide Top = fixFrontTopCorners (topLeftHardCornerLiftingCase (cube, moves) Front) (getPieces (lookup Front (fst (topLeftHardCornerLiftingCase (cube, moves) Front))))
+  -- | getNth 2 (getPieces(lookup Down cube)) == getColorOfSide Top = fixFrontTopCorners (topRightHardCornerLiftingCase (cube, moves) Front) (getPieces (lookup Front (fst (topRightHardCornerLiftingCase (cube, moves) Front))))
+  -- | otherwise                                                    = (cube, moves)
+
+fixMiddleLayerOrientation :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move]) 
+fixMiddleLayerOrientation (cube, moves) side = 
+  let frontPieces = getPieces (lookup side cube) in 
+    let downPieces = getPieces (lookup Bottom cube) in 
+      case side of
+        Front -> case getNth 7 frontPieces of
+          getColorOfSide Front -> if (getNth 1 downPieces == getColorOfSide Left) then RightAlgorithm (cube, moves)
+                                  else LeftAlgorithm (cube,moves)
+          _ -> fixMiddleLayerOrientation (down cube, moves ++ [addMove side 2]) Right 
+        Right -> case getNth 7 frontPieces of
+          getColorOfSide Front -> if (getNth 5 downPieces == getColorOfSide Left) then RightAlgorithm (cube, moves)
+                                  else LeftAlgorithm (cube, moves) 
+          _ -> fixMiddleLayerOrientation (down cube, moves ++ [addMove side 2]) Right 
+        Back -> case getNth 7 frontPieces of
+          getColorOfSide Front -> if (getNth 7 downPieces == getColorOfSide Left) then RightAlgorithm (cube, moves)
+                                  else LeftAlgorithm (cube, moves) 
+          _ -> fixMiddleLayerOrientation (down cube, moves ++ [addMove side 2]) Right 
+        Left -> case getNth 7 frontPieces of
+          getColorOfSide Front -> if (getNth 3 downPieces == getColorOfSide Left) then RightAlgorithm (cube, moves)
+                                  else LeftAlgorithm (cube, moves) 
+          _ -> fixMiddleLayerOrientation (down cube, moves ++ [addMove side 2]) Right 
+        
+RightAlgorithm :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move]) 
+RightAlgorithm (cube, moves) =  
+  (translateMove (translateMove (translateMove (translateMove (translateMove (translateMove (translateMove (translateMove cube Front Down 0) Front Down 6) Front Down 1) Front Down 7) Front Down 1) Front Down 9) Front Down 0) Front Down 8, moves ++ (map (addMove Front Down) [0,6,1,7,1,9,0,8]))         
+
+LeftAlgorithm :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
+LeftAlgorithm (cube, moves) = 
+  (translateMove (translateMove (translateMove (translateMove (translateMove (translateMove (translateMove (translateMove cube Front Down 1) Front Down 5) Front Down 0) Front Down 4) Front Down 0) Front Down 8) Front Down 1) Front Down 9, moves ++ (map (addMove Front Down) [1,5,0,4,0,8,1,9]))
+--               
