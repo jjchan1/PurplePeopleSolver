@@ -590,20 +590,20 @@ randomlist n = take n . unfoldr (Just . randomR(0, 11))
 -- Stage 1: Extended Up Cross
 
 solveUpCross :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
-solveUpCross (cube, moves) = case checkExtendedCross cube of
+solveUpCross (cube, moves) = case checkUpExtendedCross cube of
   True  -> (cube, [])
   False -> solveUpCross (fixUpEdges (cube, moves))
 
-checkCross :: VJRubiksCube -> Bool
-checkCross cube = 
-  let upPieces = getPieces (lookup Up cube) in
-    if ((getNth 1 upPieces == getColorOfSide Up) &&
-        (getNth 3 upPieces == getColorOfSide Up) &&
-        (getNth 5 upPieces == getColorOfSide Up) &&
-        (getNth 7 upPieces == getColorOfSide Up)) then True else False
+checkCross :: VJRubiksCube -> Side -> Bool
+checkCross cube side = 
+  let pieces = getPieces (lookup side cube) in
+    if ((getNth 1 pieces == getColorOfSide side) &&
+        (getNth 3 pieces == getColorOfSide side) &&
+        (getNth 5 pieces == getColorOfSide side) &&
+        (getNth 7 pieces == getColorOfSide side)) then True else False
 
-checkExtendedCross :: VJRubiksCube -> Bool
-checkExtendedCross cube = 
+checkUpExtendedCross :: VJRubiksCube -> Bool
+checkUpExtendedCross cube = 
   let frontPieces = getPieces (lookup Front cube) in
     let rightPieces = getPieces (lookup Right cube) in
       let leftPieces = getPieces (lookup Left cube) in
@@ -612,7 +612,7 @@ checkExtendedCross cube =
               (getNth 1 rightPieces == getColorOfSide Right) &&
               (getNth 1 leftPieces  == getColorOfSide Left)  &&
               (getNth 1 backPieces  == getColorOfSide Back)) &&
-              (checkCross cube == True) then True else False
+              (checkCross cube Up == True) then True else False
 
 fixUpEdges :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
 fixUpEdges (cube, moves) = 
@@ -957,3 +957,15 @@ leftAlgorithm (cube, moves) side =
 
 
 -- Stage 4: Down Cross
+
+checkDownExtendedCross :: VJRubiksCube -> Bool
+checkDownExtendedCross cube = 
+  let frontPieces = getPieces (lookup Front cube) in
+    let rightPieces = getPieces (lookup Right cube) in
+      let leftPieces = getPieces (lookup Left cube) in
+        let backPieces = getPieces (lookup Back cube) in
+          if ((getNth 7 frontPieces == getColorOfSide Front) &&
+              (getNth 7 rightPieces == getColorOfSide Right) &&
+              (getNth 7 leftPieces  == getColorOfSide Left)  &&
+              (getNth 7 backPieces  == getColorOfSide Back)) &&
+              (checkCross cube Down == True) then True else False
