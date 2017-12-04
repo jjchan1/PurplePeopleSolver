@@ -483,7 +483,7 @@ randomlist n = take n . unfoldr (Just . randomR(0, 11))
 
 solveTopCross :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
 solveTopCross (cube, moves) = case checkExtendedCross cube of
-  True -> (cube, [])
+  True  -> (cube, [])
   False -> fixTopEdges (cube, moves)
 
 checkCross :: VJRubiksCube -> Bool
@@ -515,37 +515,37 @@ fixTopEdges (cube, moves) =
 
 fixFrontTopEdges :: (VJRubiksCube, [Move]) -> [Piece] -> (VJRubiksCube, [Move])
 fixFrontTopEdges (cube, moves) pieces 
-  | getNth 1 pieces == getColorOfSide Top                        = fixFrontTopEdges (frontFaceEdgeElevationCase (skillfulTwist1 (cube, moves) Front) Front) (getPieces (lookup Front (fst (frontFaceEdgeElevationCase (skillfulTwist1 (cube, moves) Front) Front))))
-  | getNth 3 pieces == getColorOfSide Top                        = fixFrontTopEdges (downFaceEdgeElevationCase (skillfulTwist3 (cube, moves) Front) Front) (getPieces (lookup Front (fst (downFaceEdgeElevationCase (skillfulTwist3 (cube, moves) Front) Front))))
-  | getNth 5 pieces == getColorOfSide Top                        = fixFrontTopEdges (downFaceEdgeElevationCase (skillfulTwist5 (cube, moves) Front) Front) (getPieces (lookup Front (fst (downFaceEdgeElevationCase (skillfulTwist5 (cube, moves) Front) Front))))
-  | getNth 7 pieces == getColorOfSide Top                        = fixFrontTopEdges (frontFaceEdgeElevationCase (cube, moves) Front) (getPieces (lookup Front (fst (frontFaceEdgeElevationCase (cube, moves) Front))))
+  | getNth 1 pieces                        == getColorOfSide Top = fixFrontTopEdges (frontFaceEdgeElevationCase (skillfulTwist1 (cube, moves) Front) Front) (getPieces (lookup Front (fst (frontFaceEdgeElevationCase (skillfulTwist1 (cube, moves) Front) Front))))
+  | getNth 3 pieces                        == getColorOfSide Top = fixFrontTopEdges (downFaceEdgeElevationCase (skillfulTwist3 (cube, moves) Front) Front) (getPieces (lookup Front (fst (downFaceEdgeElevationCase (skillfulTwist3 (cube, moves) Front) Front))))
+  | getNth 5 pieces                        == getColorOfSide Top = fixFrontTopEdges (downFaceEdgeElevationCase (skillfulTwist5 (cube, moves) Front) Front) (getPieces (lookup Front (fst (downFaceEdgeElevationCase (skillfulTwist5 (cube, moves) Front) Front))))
+  | getNth 7 pieces                        == getColorOfSide Top = fixFrontTopEdges (frontFaceEdgeElevationCase (cube, moves) Front) (getPieces (lookup Front (fst (frontFaceEdgeElevationCase (cube, moves) Front))))
   | getNth 1 (getPieces(lookup Down cube)) == getColorOfSide Top = fixFrontTopEdges (downFaceEdgeElevationCase (cube, moves) Front) (getPieces (lookup Front (fst (downFaceEdgeElevationCase (cube, moves) Front))))
   | otherwise                                                    = (cube, moves)
 
 fixRightTopEdges :: (VJRubiksCube, [Move]) -> [Piece] -> (VJRubiksCube, [Move])
 fixRightTopEdges (cube, moves) pieces 
-  | getNth 1 pieces == getColorOfSide Top                        = fixRightTopEdges (frontFaceEdgeElevationCase (skillfulTwist1 (cube, moves) Right) Right) (getPieces (lookup Right (fst (frontFaceEdgeElevationCase (skillfulTwist1 (cube, moves) Right) Right))))
-  | getNth 3 pieces == getColorOfSide Top                        = fixRightTopEdges (downFaceEdgeElevationCase (skillfulTwist3 (cube, moves) Right) Right) (getPieces (lookup Right (fst (downFaceEdgeElevationCase (skillfulTwist3 (cube, moves) Right) Right))))
-  | getNth 5 pieces == getColorOfSide Top                        = fixRightTopEdges (downFaceEdgeElevationCase (skillfulTwist5 (cube, moves) Right) Right) (getPieces (lookup Right (fst (downFaceEdgeElevationCase (skillfulTwist5 (cube, moves) Right) Right))))
-  | getNth 7 pieces == getColorOfSide Top                        = fixRightTopEdges (frontFaceEdgeElevationCase (cube, moves) Right) (getPieces (lookup Right (fst (frontFaceEdgeElevationCase (cube, moves) Right))))
+  | getNth 1 pieces                        == getColorOfSide Top = fixRightTopEdges (frontFaceEdgeElevationCase (skillfulTwist1 (cube, moves) Right) Right) (getPieces (lookup Right (fst (frontFaceEdgeElevationCase (skillfulTwist1 (cube, moves) Right) Right))))
+  | getNth 3 pieces                        == getColorOfSide Top = fixRightTopEdges (downFaceEdgeElevationCase (skillfulTwist3 (cube, moves) Right) Right) (getPieces (lookup Right (fst (downFaceEdgeElevationCase (skillfulTwist3 (cube, moves) Right) Right))))
+  | getNth 5 pieces                        == getColorOfSide Top = fixRightTopEdges (downFaceEdgeElevationCase (skillfulTwist5 (cube, moves) Right) Right) (getPieces (lookup Right (fst (downFaceEdgeElevationCase (skillfulTwist5 (cube, moves) Right) Right))))
+  | getNth 7 pieces                        == getColorOfSide Top = fixRightTopEdges (frontFaceEdgeElevationCase (cube, moves) Right) (getPieces (lookup Right (fst (frontFaceEdgeElevationCase (cube, moves) Right))))
   | getNth 5 (getPieces(lookup Down cube)) == getColorOfSide Top = fixRightTopEdges (downFaceEdgeElevationCase (cube, moves) Right) (getPieces (lookup Right (fst (downFaceEdgeElevationCase (cube, moves) Right))))
   | otherwise                                                    = (cube, moves)
  
 fixLeftTopEdges :: (VJRubiksCube, [Move]) -> [Piece] -> (VJRubiksCube, [Move])
 fixLeftTopEdges (cube, moves) pieces 
-  | getNth 1 pieces == getColorOfSide Top                        = fixLeftTopEdges (frontFaceEdgeElevationCase (skillfulTwist1 (cube, moves) Left) Left) (getPieces (lookup Left (fst (frontFaceEdgeElevationCase (skillfulTwist1 (cube, moves) Left) Left))))
-  | getNth 3 pieces == getColorOfSide Top                        = fixLeftTopEdges (downFaceEdgeElevationCase (skillfulTwist3 (cube, moves) Left) Left) (getPieces (lookup Left (fst (downFaceEdgeElevationCase (skillfulTwist3 (cube, moves) Left) Left))))
-  | getNth 5 pieces == getColorOfSide Top                        = fixLeftTopEdges (downFaceEdgeElevationCase (skillfulTwist5 (cube, moves) Left) Left) (getPieces (lookup Left (fst (downFaceEdgeElevationCase (skillfulTwist5 (cube, moves) Left) Left))))
-  | getNth 7 pieces == getColorOfSide Top                        = fixLeftTopEdges (frontFaceEdgeElevationCase (cube, moves) Left) (getPieces (lookup Left (fst (frontFaceEdgeElevationCase (cube, moves) Left))))
+  | getNth 1 pieces                        == getColorOfSide Top = fixLeftTopEdges (frontFaceEdgeElevationCase (skillfulTwist1 (cube, moves) Left) Left) (getPieces (lookup Left (fst (frontFaceEdgeElevationCase (skillfulTwist1 (cube, moves) Left) Left))))
+  | getNth 3 pieces                        == getColorOfSide Top = fixLeftTopEdges (downFaceEdgeElevationCase (skillfulTwist3 (cube, moves) Left) Left) (getPieces (lookup Left (fst (downFaceEdgeElevationCase (skillfulTwist3 (cube, moves) Left) Left))))
+  | getNth 5 pieces                        == getColorOfSide Top = fixLeftTopEdges (downFaceEdgeElevationCase (skillfulTwist5 (cube, moves) Left) Left) (getPieces (lookup Left (fst (downFaceEdgeElevationCase (skillfulTwist5 (cube, moves) Left) Left))))
+  | getNth 7 pieces                        == getColorOfSide Top = fixLeftTopEdges (frontFaceEdgeElevationCase (cube, moves) Left) (getPieces (lookup Left (fst (frontFaceEdgeElevationCase (cube, moves) Left))))
   | getNth 3 (getPieces(lookup Down cube)) == getColorOfSide Top = fixLeftTopEdges (downFaceEdgeElevationCase (cube, moves) Left) (getPieces (lookup Left (fst (downFaceEdgeElevationCase (cube, moves) Left))))
   | otherwise                                                    = (cube, moves)
 
 fixBackTopEdges :: (VJRubiksCube, [Move]) -> [Piece] -> (VJRubiksCube, [Move]) 
 fixBackTopEdges (cube, moves) pieces  
-  | getNth 1 pieces == getColorOfSide Top                        = fixBackTopEdges (frontFaceEdgeElevationCase (skillfulTwist1 (cube, moves) Back) Back) (getPieces (lookup Back (fst (frontFaceEdgeElevationCase (skillfulTwist1 (cube, moves) Back) Back))))
-  | getNth 3 pieces == getColorOfSide Top                        = fixBackTopEdges (downFaceEdgeElevationCase (skillfulTwist3 (cube, moves) Back) Back) (getPieces (lookup Back (fst (downFaceEdgeElevationCase (skillfulTwist3 (cube, moves) Back) Back))))
-  | getNth 5 pieces == getColorOfSide Top                        = fixBackTopEdges (downFaceEdgeElevationCase (skillfulTwist5 (cube, moves) Back) Back) (getPieces (lookup Back (fst (downFaceEdgeElevationCase (skillfulTwist5 (cube, moves) Back) Back))))
-  | getNth 7 pieces == getColorOfSide Top                        = fixBackTopEdges (frontFaceEdgeElevationCase (cube, moves) Back) (getPieces (lookup Back (fst (frontFaceEdgeElevationCase (cube, moves) Back))))
+  | getNth 1 pieces                        == getColorOfSide Top = fixBackTopEdges (frontFaceEdgeElevationCase (skillfulTwist1 (cube, moves) Back) Back) (getPieces (lookup Back (fst (frontFaceEdgeElevationCase (skillfulTwist1 (cube, moves) Back) Back))))
+  | getNth 3 pieces                        == getColorOfSide Top = fixBackTopEdges (downFaceEdgeElevationCase (skillfulTwist3 (cube, moves) Back) Back) (getPieces (lookup Back (fst (downFaceEdgeElevationCase (skillfulTwist3 (cube, moves) Back) Back))))
+  | getNth 5 pieces                        == getColorOfSide Top = fixBackTopEdges (downFaceEdgeElevationCase (skillfulTwist5 (cube, moves) Back) Back) (getPieces (lookup Back (fst (downFaceEdgeElevationCase (skillfulTwist5 (cube, moves) Back) Back))))
+  | getNth 7 pieces                        == getColorOfSide Top = fixBackTopEdges (frontFaceEdgeElevationCase (cube, moves) Back) (getPieces (lookup Back (fst (frontFaceEdgeElevationCase (cube, moves) Back))))
   | getNth 7 (getPieces(lookup Down cube)) == getColorOfSide Top = fixBackTopEdges (downFaceEdgeElevationCase (cube, moves) Back) (getPieces (lookup Back (fst (downFaceEdgeElevationCase (cube, moves) Back))))
   | otherwise                                                    = (cube, moves)
 
@@ -613,15 +613,15 @@ checkExtendedCorners cube =
               (getNth 2 frontPieces == getColorOfSide Front) &&
               (getNth 0 rightPieces == getColorOfSide Right) &&
               (getNth 2 rightPieces == getColorOfSide Right) &&
-              (getNth 0 leftPieces == getColorOfSide Left) &&
-              (getNth 2 leftPieces == getColorOfSide Left) &&
-              (getNth 0 backPieces == getColorOfSide Back) &&
-              (getNth 2 backPieces == getColorOfSide Back)) &&
+              (getNth 0 leftPieces  == getColorOfSide Left)  &&
+              (getNth 2 leftPieces  == getColorOfSide Left)  &&
+              (getNth 0 backPieces  == getColorOfSide Back)  &&
+              (getNth 2 backPieces  == getColorOfSide Back)) &&
               (checkCorners cube == True) then True else False
 
 solveTopCorners :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
 solveTopCorners (cube, moves) = case checkExtendedCorners cube of
-  True -> (cube, moves)
+  True  -> (cube, moves)
   False -> fixTopCorners (cube, moves)
 
 fixTopCorners :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
@@ -633,40 +633,40 @@ fixTopCorners (cube, moves) =
 
 fixFrontTopCorners :: (VJRubiksCube, [Move]) -> [Piece] -> (VJRubiksCube, [Move])
 fixFrontTopCorners (cube, moves) pieces 
-  | getNth 0 pieces == getColorOfSide Top                        = fixFrontTopCorners (leftCornerLiftingCase (skillfulTwist0 (cube, moves) Front) Front) (getPieces (lookup Front (fst (leftCornerLiftingCase (skillfulTwist0 (cube, moves) Front) Front))))
-  | getNth 2 pieces == getColorOfSide Top                        = fixFrontTopCorners (rightCornerLiftingCase (skillfulTwist2 (cube, moves) Front) Front) (getPieces (lookup Front (fst (rightCornerLiftingCase (skillfulTwist2 (cube, moves) Front) Front))))
-  | getNth 6 pieces == getColorOfSide Top                        = fixFrontTopCorners (leftCornerLiftingCase (cube, moves) Front) (getPieces (lookup Front (fst (leftCornerLiftingCase (cube, moves) Front))))
-  | getNth 8 pieces == getColorOfSide Top                        = fixFrontTopCorners (rightCornerLiftingCase (cube, moves) Front) (getPieces (lookup Front (fst (rightCornerLiftingCase (cube, moves) Front))))
+  | getNth 0 pieces                        == getColorOfSide Top = fixFrontTopCorners (leftCornerLiftingCase (skillfulTwist0 (cube, moves) Front) Front) (getPieces (lookup Front (fst (leftCornerLiftingCase (skillfulTwist0 (cube, moves) Front) Front))))
+  | getNth 2 pieces                        == getColorOfSide Top = fixFrontTopCorners (rightCornerLiftingCase (skillfulTwist2 (cube, moves) Front) Front) (getPieces (lookup Front (fst (rightCornerLiftingCase (skillfulTwist2 (cube, moves) Front) Front))))
+  | getNth 6 pieces                        == getColorOfSide Top = fixFrontTopCorners (leftCornerLiftingCase (cube, moves) Front) (getPieces (lookup Front (fst (leftCornerLiftingCase (cube, moves) Front))))
+  | getNth 8 pieces                        == getColorOfSide Top = fixFrontTopCorners (rightCornerLiftingCase (cube, moves) Front) (getPieces (lookup Front (fst (rightCornerLiftingCase (cube, moves) Front))))
   | getNth 0 (getPieces(lookup Down cube)) == getColorOfSide Top = fixFrontTopCorners (topLeftHardCornerLiftingCase (cube, moves) Front) (getPieces (lookup Front (fst (topLeftHardCornerLiftingCase (cube, moves) Front))))
   | getNth 2 (getPieces(lookup Down cube)) == getColorOfSide Top = fixFrontTopCorners (topRightHardCornerLiftingCase (cube, moves) Front) (getPieces (lookup Front (fst (topRightHardCornerLiftingCase (cube, moves) Front))))
   | otherwise                                                    = (cube, moves)
 
 fixRightTopCorners :: (VJRubiksCube, [Move]) -> [Piece] -> (VJRubiksCube, [Move])
 fixRightTopCorners (cube, moves) pieces 
-  | getNth 0 pieces == getColorOfSide Top                        = fixRightTopCorners (leftCornerLiftingCase (skillfulTwist0 (cube, moves) Right) Right) (getPieces (lookup Right (fst (leftCornerLiftingCase (skillfulTwist0 (cube, moves) Right) Right))))
-  | getNth 2 pieces == getColorOfSide Top                        = fixRightTopCorners (rightCornerLiftingCase (skillfulTwist2 (cube, moves) Right) Right) (getPieces (lookup Right (fst (rightCornerLiftingCase (skillfulTwist2 (cube, moves) Right) Right))))
-  | getNth 6 pieces == getColorOfSide Top                        = fixRightTopCorners (leftCornerLiftingCase (cube, moves) Right) (getPieces (lookup Right (fst (leftCornerLiftingCase (cube, moves) Right))))
-  | getNth 8 pieces == getColorOfSide Top                        = fixRightTopCorners (rightCornerLiftingCase (cube, moves) Right) (getPieces (lookup Right (fst (rightCornerLiftingCase (cube, moves) Right))))
+  | getNth 0 pieces                        == getColorOfSide Top = fixRightTopCorners (leftCornerLiftingCase (skillfulTwist0 (cube, moves) Right) Right) (getPieces (lookup Right (fst (leftCornerLiftingCase (skillfulTwist0 (cube, moves) Right) Right))))
+  | getNth 2 pieces                        == getColorOfSide Top = fixRightTopCorners (rightCornerLiftingCase (skillfulTwist2 (cube, moves) Right) Right) (getPieces (lookup Right (fst (rightCornerLiftingCase (skillfulTwist2 (cube, moves) Right) Right))))
+  | getNth 6 pieces                        == getColorOfSide Top = fixRightTopCorners (leftCornerLiftingCase (cube, moves) Right) (getPieces (lookup Right (fst (leftCornerLiftingCase (cube, moves) Right))))
+  | getNth 8 pieces                        == getColorOfSide Top = fixRightTopCorners (rightCornerLiftingCase (cube, moves) Right) (getPieces (lookup Right (fst (rightCornerLiftingCase (cube, moves) Right))))
   | getNth 2 (getPieces(lookup Down cube)) == getColorOfSide Top = fixRightTopCorners (topLeftHardCornerLiftingCase (cube, moves) Right) (getPieces (lookup Right (fst (topLeftHardCornerLiftingCase (cube, moves) Right))))
   | getNth 8 (getPieces(lookup Down cube)) == getColorOfSide Top = fixRightTopCorners (topRightHardCornerLiftingCase (cube, moves) Right) (getPieces (lookup Right (fst (topRightHardCornerLiftingCase (cube, moves) Right))))
   | otherwise                                                    = (cube, moves)
  
 fixLeftTopCorners :: (VJRubiksCube, [Move]) -> [Piece] -> (VJRubiksCube, [Move])
 fixLeftTopCorners (cube, moves) pieces 
-  | getNth 0 pieces == getColorOfSide Top                        = fixLeftTopCorners (leftCornerLiftingCase (skillfulTwist0 (cube, moves) Left) Left) (getPieces (lookup Left (fst (leftCornerLiftingCase (skillfulTwist0 (cube, moves) Left) Left))))
-  | getNth 2 pieces == getColorOfSide Top                        = fixLeftTopCorners (rightCornerLiftingCase (skillfulTwist2 (cube, moves) Left) Left) (getPieces (lookup Left (fst (rightCornerLiftingCase (skillfulTwist2 (cube, moves) Left) Left))))
-  | getNth 6 pieces == getColorOfSide Top                        = fixLeftTopCorners (leftCornerLiftingCase (cube, moves) Left) (getPieces (lookup Left (fst (leftCornerLiftingCase (cube, moves) Left))))
-  | getNth 8 pieces == getColorOfSide Top                        = fixLeftTopCorners (rightCornerLiftingCase (cube, moves) Left) (getPieces (lookup Left (fst (rightCornerLiftingCase (cube, moves) Left))))
+  | getNth 0 pieces                        == getColorOfSide Top = fixLeftTopCorners (leftCornerLiftingCase (skillfulTwist0 (cube, moves) Left) Left) (getPieces (lookup Left (fst (leftCornerLiftingCase (skillfulTwist0 (cube, moves) Left) Left))))
+  | getNth 2 pieces                        == getColorOfSide Top = fixLeftTopCorners (rightCornerLiftingCase (skillfulTwist2 (cube, moves) Left) Left) (getPieces (lookup Left (fst (rightCornerLiftingCase (skillfulTwist2 (cube, moves) Left) Left))))
+  | getNth 6 pieces                        == getColorOfSide Top = fixLeftTopCorners (leftCornerLiftingCase (cube, moves) Left) (getPieces (lookup Left (fst (leftCornerLiftingCase (cube, moves) Left))))
+  | getNth 8 pieces                        == getColorOfSide Top = fixLeftTopCorners (rightCornerLiftingCase (cube, moves) Left) (getPieces (lookup Left (fst (rightCornerLiftingCase (cube, moves) Left))))
   | getNth 6 (getPieces(lookup Down cube)) == getColorOfSide Top = fixLeftTopCorners (topLeftHardCornerLiftingCase (cube, moves) Left) (getPieces (lookup Left (fst (topLeftHardCornerLiftingCase (cube, moves) Left))))
   | getNth 0 (getPieces(lookup Down cube)) == getColorOfSide Top = fixLeftTopCorners (topRightHardCornerLiftingCase (cube, moves) Left) (getPieces (lookup Left (fst (topRightHardCornerLiftingCase (cube, moves) Left))))
   | otherwise                                                    = (cube, moves)
 
 fixBackTopCorners :: (VJRubiksCube, [Move]) -> [Piece] -> (VJRubiksCube, [Move])
 fixBackTopCorners (cube, moves) pieces 
-  | getNth 0 pieces == getColorOfSide Top                        = fixBackTopCorners (leftCornerLiftingCase (skillfulTwist0 (cube, moves) Back) Back) (getPieces (lookup Back (fst (leftCornerLiftingCase (skillfulTwist0 (cube, moves) Back) Back))))
-  | getNth 2 pieces == getColorOfSide Top                        = fixBackTopCorners (rightCornerLiftingCase (skillfulTwist2 (cube, moves) Back) Back) (getPieces (lookup Back (fst (rightCornerLiftingCase (skillfulTwist2 (cube, moves) Back) Back))))
-  | getNth 6 pieces == getColorOfSide Top                        = fixBackTopCorners (leftCornerLiftingCase (cube, moves) Back) (getPieces (lookup Back (fst (leftCornerLiftingCase (cube, moves) Back))))
-  | getNth 8 pieces == getColorOfSide Top                        = fixBackTopCorners (rightCornerLiftingCase (cube, moves) Back) (getPieces (lookup Back (fst (rightCornerLiftingCase (cube, moves) Back))))
+  | getNth 0 pieces                        == getColorOfSide Top = fixBackTopCorners (leftCornerLiftingCase (skillfulTwist0 (cube, moves) Back) Back) (getPieces (lookup Back (fst (leftCornerLiftingCase (skillfulTwist0 (cube, moves) Back) Back))))
+  | getNth 2 pieces                        == getColorOfSide Top = fixBackTopCorners (rightCornerLiftingCase (skillfulTwist2 (cube, moves) Back) Back) (getPieces (lookup Back (fst (rightCornerLiftingCase (skillfulTwist2 (cube, moves) Back) Back))))
+  | getNth 6 pieces                        == getColorOfSide Top = fixBackTopCorners (leftCornerLiftingCase (cube, moves) Back) (getPieces (lookup Back (fst (leftCornerLiftingCase (cube, moves) Back))))
+  | getNth 8 pieces                        == getColorOfSide Top = fixBackTopCorners (rightCornerLiftingCase (cube, moves) Back) (getPieces (lookup Back (fst (rightCornerLiftingCase (cube, moves) Back))))
   | getNth 8 (getPieces(lookup Down cube)) == getColorOfSide Top = fixBackTopCorners (topLeftHardCornerLiftingCase (cube, moves) Back) (getPieces (lookup Back (fst (topLeftHardCornerLiftingCase (cube, moves) Back))))
   | getNth 6 (getPieces(lookup Down cube)) == getColorOfSide Top = fixBackTopCorners (topRightHardCornerLiftingCase (cube, moves) Back) (getPieces (lookup Back (fst (topRightHardCornerLiftingCase (cube, moves) Back))))
   | otherwise                                                    = (cube, moves)
@@ -765,29 +765,29 @@ topRightHardCornerLiftingCase (cube, moves) side =
 
 -- Stage 3
 
--- solveMiddleLayer :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
--- solveMiddleLayer (cube, moves) = case checkMiddleLayer cube of
---   True -> (cube, moves)
---   False -> fixMiddleLayer (cube, moves)
+solveMiddleLayer :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
+solveMiddleLayer (cube, moves) = case checkMiddleLayer cube of
+  True  -> (cube, moves)
+  False -> fixMiddleLayer (cube, moves)
 
--- checkMiddleLayer :: VJRubiksCube -> Bool
--- checkMiddleLayer cube = 
---   let frontPieces = getPieces (lookup Front cube) in
---     let rightPieces = getPieces (lookup Right cube) in
---       let leftPieces = getPieces (lookup Left cube) in
---         let backPieces = getPieces (lookup Back cube) in
---           if ((getNth 3 frontPieces == getColorOfSide Front) &&
---               (getNth 5 frontPieces == getColorOfSide Front) &&
---               (getNth 3 rightPieces == getColorOfSide Right) &&
---               (getNth 5 rightPieces == getColorOfSide Right) &&
---               (getNth 3 leftPieces == getColorOfSide Left) &&
---               (getNth 5 leftPieces == getColorOfSide Left) &&
---               (getNth 3 backPieces == getColorOfSide Back) &&
---               (getNth 5 backPieces == getColorOfSide Back)) then True else False
+checkMiddleLayer :: VJRubiksCube -> Bool
+checkMiddleLayer cube = 
+  let frontPieces = getPieces (lookup Front cube) in
+    let rightPieces = getPieces (lookup Right cube) in
+      let leftPieces = getPieces (lookup Left cube) in
+        let backPieces = getPieces (lookup Back cube) in
+          if ((getNth 3 frontPieces == getColorOfSide Front) &&
+              (getNth 5 frontPieces == getColorOfSide Front) &&
+              (getNth 3 rightPieces == getColorOfSide Right) &&
+              (getNth 5 rightPieces == getColorOfSide Right) &&
+              (getNth 3 leftPieces  == getColorOfSide Left)  &&
+              (getNth 5 leftPieces  == getColorOfSide Left)  &&
+              (getNth 3 backPieces  == getColorOfSide Back)  &&
+              (getNth 5 backPieces  == getColorOfSide Back)) then True else False
 
--- fixMiddleLayer :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
--- fixMiddleLayer (cube, moves) = 
---   let (cube', moves') = fixFrontMiddleLayer (cube, moves) (getPieces (lookup Front cube)) in
---     let (cube'', moves'') = fixRightMiddleLayer (cube', moves') (getPieces (lookup Right cube')) in
---       let (cube''', moves''') = fixLeftMiddleLayer (cube'', moves'') (getPieces (lookup Left cube'')) in
---         fixBackMiddleLayer (cube''', moves''') (getPieces (lookup Back cube'''))
+fixMiddleLayer :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
+fixMiddleLayer (cube, moves) = 
+  let (cube', moves') = fixFrontMiddleLayer (cube, moves) (getPieces (lookup Front cube)) in
+    let (cube'', moves'') = fixRightMiddleLayer (cube', moves') (getPieces (lookup Right cube')) in
+      let (cube''', moves''') = fixLeftMiddleLayer (cube'', moves'') (getPieces (lookup Left cube'')) in
+        fixBackMiddleLayer (cube''', moves''') (getPieces (lookup Back cube'''))
