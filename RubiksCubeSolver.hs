@@ -471,53 +471,53 @@ translateMoveSS cube frontSide upSide move =
         11  -> doMove 9 cube
     Down -> case frontSide of 
       Front -> case move of
-        0   -> doMove 0 cube
-        1   -> doMove 1 cube
-        2   -> doMove 2 cube
-        3   -> doMove 3 cube
-        4   -> doMove 4 cube
-        5   -> doMove 5 cube
-        6   -> doMove 6 cube
-        7   -> doMove 7 cube
+        0   -> doMove 2 cube
+        1   -> doMove 3 cube
+        2   -> doMove 0 cube
+        3   -> doMove 1 cube
+        4   -> doMove 6 cube
+        5   -> doMove 7 cube
+        6   -> doMove 4 cube
+        7   -> doMove 5 cube
         8   -> doMove 8 cube
         9   -> doMove 9 cube
         10  -> doMove 10 cube
         11  -> doMove 11 cube
       Right -> case move of
-        0   -> doMove 0 cube
-        1   -> doMove 1 cube
-        2   -> doMove 2 cube
-        3   -> doMove 3 cube
+        0   -> doMove 2 cube
+        1   -> doMove 3 cube
+        2   -> doMove 0 cube
+        3   -> doMove 1 cube
         4   -> doMove 8 cube
         5   -> doMove 9 cube
         6   -> doMove 10 cube
         7   -> doMove 11 cube
-        8   -> doMove 6 cube
-        9   -> doMove 7 cube
-        10  -> doMove 4 cube
-        11  -> doMove 5 cube
+        8   -> doMove 4 cube
+        9   -> doMove 5 cube
+        10  -> doMove 6 cube
+        11  -> doMove 7 cube
       Left  -> case move of 
-        0   -> doMove 0 cube
-        1   -> doMove 1 cube
-        2   -> doMove 2 cube
-        3   -> doMove 3 cube
+        0   -> doMove 2 cube
+        1   -> doMove 3 cube
+        2   -> doMove 0 cube
+        3   -> doMove 1 cube
         4   -> doMove 10 cube
         5   -> doMove 11 cube
         6   -> doMove 8 cube
         7   -> doMove 9 cube
-        8   -> doMove 4 cube
-        9   -> doMove 5 cube
-        10  -> doMove 6 cube
-        11  -> doMove 7 cube  
+        8   -> doMove 6 cube
+        9   -> doMove 7 cube
+        10  -> doMove 4 cube
+        11  -> doMove 5 cube  
       Back  -> case move of
-        0   -> doMove 0 cube
-        1   -> doMove 1 cube
-        2   -> doMove 2 cube
-        3   -> doMove 3 cube
-        4   -> doMove 6 cube
-        5   -> doMove 7 cube
-        6   -> doMove 4 cube
-        7   -> doMove 5 cube
+        0   -> doMove 2 cube
+        1   -> doMove 3 cube
+        2   -> doMove 0 cube
+        3   -> doMove 1 cube
+        4   -> doMove 4 cube
+        5   -> doMove 5 cube
+        6   -> doMove 6 cube
+        7   -> doMove 7 cube
         8   -> doMove 10 cube
         9   -> doMove 11 cube
         10  -> doMove 8 cube
