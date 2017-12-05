@@ -590,9 +590,10 @@ randomlist n = take n . unfoldr (Just . randomR(0, 11))
 -- Stage 1: Extended Up Cross
 
 solveUpCross :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
-solveUpCross (cube, moves) = case checkUpExtendedCross cube of
-  True  -> (cube, moves)
-  False -> solveUpCross (fixUpEdges (cube, moves))
+solveUpCross (cube, moves) =
+  case checkUpExtendedCross cube of
+    True  -> (cube, moves)
+    False -> solveUpCross (fixUpEdges (cube, moves))
 
 checkCross :: VJRubiksCube -> Side -> Bool
 checkCross cube side = 
@@ -701,7 +702,7 @@ downFaceEdgeElevationCase (cube, moves) side =
                else (downFaceEdgeElevationCase (down cube, moves ++ [addMove side Up 2]) Front)
 
 
--- Stage 2: Extended corners (Up layer)
+-- Stage 2: Extended Corners (Up Layer)
 
 checkCorners :: VJRubiksCube -> Bool
 checkCorners cube = 
@@ -728,9 +729,10 @@ checkExtendedCorners cube =
               (checkCorners cube == True) then True else False
 
 solveUpCorners :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
-solveUpCorners (cube, moves) = case checkExtendedCorners cube of
-  True  -> (cube, moves)
-  False -> solveUpCorners (fixUpCorners (cube, moves))
+solveUpCorners (cube, moves) =
+  case checkExtendedCorners cube of
+    True  -> (cube, moves)
+    False -> solveUpCorners (fixUpCorners (cube, moves))
 
 fixUpCorners :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
 fixUpCorners (cube, moves) = 
@@ -875,9 +877,10 @@ topRightHardCornerLiftingCase (cube, moves) side =
 -- Stage 3: Middle Layer
 
 solveMiddleLayer :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
-solveMiddleLayer (cube, moves) = case checkMiddleLayer cube of
-  True  -> (cube, moves)
-  False -> solveMiddleLayer (fixMiddleLayer (cube, moves))
+solveMiddleLayer (cube, moves) =
+  case checkMiddleLayer cube of
+    True  -> (cube, moves)
+    False -> solveMiddleLayer (fixMiddleLayer (cube, moves))
 
 checkMiddleLayer :: VJRubiksCube -> Bool
 checkMiddleLayer cube = 
@@ -958,13 +961,13 @@ leftAlgorithm (cube, moves) side =
 -- Stage 4: Down Cross
 
 solveDownCross :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
-solveDownCross (cube, moves) = case checkCross cube Down of
-  True  -> (cube, moves)
-  False -> solveDownCross (fixDownCross (cube, moves))
+solveDownCross (cube, moves) =
+  case checkCross cube Down of
+    True  -> (cube, moves)
+    False -> solveDownCross (fixDownCross (cube, moves))
 
 fixDownCross :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
 fixDownCross (cube, moves)
-  | checkCross cube Down       == True = (cube, moves)
   | checkHorizontalLineNS cube == True = permutationChangeAlgorithm (cube, moves) Left
   | checkHorizontalLineEW cube == True = permutationChangeAlgorithm (cube, moves) Front
   | checkLFront cube           == True = shortcutLToCrossAlgorithm (cube, moves) Front
@@ -1029,9 +1032,10 @@ shortcutLToCrossAlgorithm (cube, moves) side =
 -- Stage 5: Extended Down Cross
 
 solveDownExtendedCross :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
-solveDownExtendedCross (cube, moves) = case checkDownExtendedCross cube of
-  True  -> (cube, moves)
-  False -> solveDownExtendedCross (fixDownExtendedCross (cube, moves))
+solveDownExtendedCross (cube, moves) =
+  case checkDownExtendedCross cube of
+    True  -> (cube, moves)
+    False -> solveDownExtendedCross (fixDownExtendedCross (cube, moves))
 
 checkDownExtendedCross :: VJRubiksCube -> Bool
 checkDownExtendedCross cube = 
@@ -1167,3 +1171,94 @@ checkCornerLBU cube =
 swapCornerAlgorithm :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move])
 swapCornerAlgorithm (cube, moves) side = 
   (foldl (\a x -> translateMove a side Down x) cube [0,6,1,5,0,7,1,4], moves ++ (map (addMove side Down) [0,6,1,5,0,7,1,4]))
+
+
+-- Stage 7: Orient Down Corners
+
+solveFinalCorners :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
+solveFinalCorners (cube, moves) = 
+  case cube == solvedCube of
+    True  -> (cube, moves)
+    False -> fixFinalCorners (cube, moves)
+
+findFinalFace :: VJRubiksCube -> Side
+findFinalFace cube
+  | checkCornerFRUStrict cube == False = Front
+  | checkCornerFLUStrict cube == False = Right
+  | checkCornerRBUStrict cube == False = Left
+  | checkCornerLBUStrict cube == False = Back
+
+fixFinalCorners :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
+fixFinalCorners (cube, moves) = 
+  case findFinalFace cube of
+    Front -> fixFinalCornerFront (cube, moves) Front
+    Right -> fixFinalCornerRight (cube, moves) Right
+    Left  -> fixFinalCornerLeft (cube, moves) Left
+    Back  -> fixFinalCornerBack (cube, moves) Back
+
+fixFinalCornerFront :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move])
+fixFinalCornerFront (cube, moves) side
+  | checkCornerFRUStrict cube == False = fixFinalCornerFront (orientCornerAlgorithm (cube, moves) side) side
+  | otherwise                          = fixFinalCornerRight (down cube, moves ++ [addMove Front Up 2]) side
+ 
+fixFinalCornerRight :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move])
+fixFinalCornerRight (cube, moves) 
+  | checkCornerFLUStrict cube == False = fixFinalCornerRight (orientCornerAlgorithm (cube, moves) side) side
+  | otherwise                          = fixFinalCornerLeft (down cube, moves ++ [addMove Front Up 2]) side
+ 
+fixFinalCornerLeft :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move])
+fixFinalCornerLeft (cube, moves) 
+  | checkCornerRBUStrict cube == False = fixFinalCornerLeft (orientCornerAlgorithm (cube, moves) side) side
+  | otherwise                          = fixFinalCornerBack (down cube, moves ++ [addMove Front Up 2]) side
+ 
+fixFinalCornerBack :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move])
+fixFinalCornerBack (cube, moves) 
+  | checkCornerLBUStrict cube == False = fixFinalCornerBack (orientCornerAlgorithm (cube, moves) side) side
+  | otherwise                          = (cube, moves)
+ 
+checkCornerFRUStrict :: VJRubiksCube -> Bool
+checkCornerFRUStrict cube = 
+  let correctColors = map getColorOfSide [Front, Left, Down] in
+    let currentColors = [getNth 6 (getPieces (lookup Front cube)),
+                         getNth 8 (getPieces (lookup Left cube)),
+                         getNth 0 (getPieces (lookup Down cube))] in
+      correctColors == currentColors
+
+checkCornerFLUStrict :: VJRubiksCube -> Bool
+checkCornerFLUStrict cube = 
+  let correctColors = map getColorOfSide [Front, Right, Down] in
+    let currentColors = [getNth 8 (getPieces (lookup Front cube)),
+                         getNth 6 (getPieces (lookup Right cube)),
+                         getNth 2 (getPieces (lookup Down cube))] in
+      correctColors == currentColors 
+
+checkCornerRBUStrict :: VJRubiksCube -> Bool
+checkCornerRBUStrict cube = 
+  let correctColors = map getColorOfSide [Left, Back, Down] in
+    let currentColors = [getNth 6 (getPieces (lookup Left cube)),
+                         getNth 8 (getPieces (lookup Back cube)),
+                         getNth 6 (getPieces (lookup Down cube))] in
+      correctColors == currentColors 
+
+checkCornerLBUStrict :: VJRubiksCube -> Bool
+checkCornerLBUStrict cube = 
+  let correctColors = map getColorOfSide [Right, Back, Down] in
+    let currentColors = [getNth 8 (getPieces (lookup Right cube)),
+                         getNth 6 (getPieces (lookup Back cube)),
+                         getNth 8 (getPieces (lookup Down cube))] in
+      correctColors == currentColors
+
+-- R', D', R, D
+orientCornerAlgorithm :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move])
+orientCornerAlgorithm (cube, moves) side =
+  (foldl (\a x -> translateMove a side Down x) cube [7,3,6,2], moves ++ (map (addMove side Down) [7,3,6,2]))
+
+watDo =
+  let r = back (front (right (left solvedCube))) in
+  let r1 = solveUpCross (r, []) in
+  let r2 = solveUpCorners r1 in
+  let r3 = solveMiddleLayer r2 in
+  let r4 = solveDownCross r3 in
+  let r5 = solveDownExtendedCross r4 in
+  let r6 = solveDownCorners r5 in
+    solveFinalCorners r6
