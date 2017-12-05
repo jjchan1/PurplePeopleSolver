@@ -1191,30 +1191,30 @@ findFinalFace cube
 fixFinalCorners :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
 fixFinalCorners (cube, moves) = 
   case findFinalFace cube of
-    Front -> fixFinalCornerFront (cube, moves) Front
-    Right -> fixFinalCornerRight (cube, moves) Right
-    Back  -> fixFinalCornerBack (cube, moves) Back
-    Left  -> fixFinalCornerLeft (cube, moves) Left
+    Front -> fixFinalCornerFront (cube, moves) Front 0
+    Right -> fixFinalCornerRight (cube, moves) Right 2
+    Back  -> fixFinalCornerBack (cube, moves) Back 8
+    Left  -> fixFinalCornerLeft (cube, moves) Left 6
 
-fixFinalCornerFront :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move])
-fixFinalCornerFront (cube, moves) side
-  | getNth 0 (getPieces (lookup Down cube)) == getColorOfSide Down = fixFinalCornerFront (orientCornerAlgorithm (cube, moves) side) side
-  | otherwise                                                      = fixFinalCornerRight (down cube, moves ++ [addMove side Up 2]) side
+fixFinalCornerFront :: (VJRubiksCube, [Move]) -> Side -> Int -> (VJRubiksCube, [Move])
+fixFinalCornerFront (cube, moves) side index
+  | getNth index (getPieces (lookup Down cube)) /= getColorOfSide Down = fixFinalCornerFront (orientCornerAlgorithm (cube, moves) side) side index
+  | otherwise                                                          = fixFinalCornerRight (down cube, moves ++ [addMove side Up 2]) side index
  
-fixFinalCornerRight :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move])
-fixFinalCornerRight (cube, moves) side
-  | getNth 2 (getPieces (lookup Down cube)) == getColorOfSide Down = fixFinalCornerRight (orientCornerAlgorithm (cube, moves) side) side
-  | otherwise                                                      = fixFinalCornerBack (down cube, moves ++ [addMove side Up 2]) side
+fixFinalCornerRight :: (VJRubiksCube, [Move]) -> Side -> Int -> (VJRubiksCube, [Move])
+fixFinalCornerRight (cube, moves) side index
+  | getNth index (getPieces (lookup Down cube)) /= getColorOfSide Down = fixFinalCornerRight (orientCornerAlgorithm (cube, moves) side) side index
+  | otherwise                                                          = fixFinalCornerBack (down cube, moves ++ [addMove side Up 2]) side index
  
-fixFinalCornerBack :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move])
-fixFinalCornerBack (cube, moves) side
-  | getNth 8 (getPieces (lookup Down cube)) == getColorOfSide Down = fixFinalCornerBack (orientCornerAlgorithm (cube, moves) side) side
-  | otherwise                                                      = fixFinalCornerLeft (down cube, moves ++ [addMove side Up 2]) side
+fixFinalCornerBack :: (VJRubiksCube, [Move]) -> Side -> Int -> (VJRubiksCube, [Move])
+fixFinalCornerBack (cube, moves) side index
+  | getNth index (getPieces (lookup Down cube)) /= getColorOfSide Down = fixFinalCornerBack (orientCornerAlgorithm (cube, moves) side) side index
+  | otherwise                                                          = fixFinalCornerLeft (down cube, moves ++ [addMove side Up 2]) side index
 
-fixFinalCornerLeft :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move])
-fixFinalCornerLeft (cube, moves) side
-  | getNth 6 (getPieces (lookup Down cube)) == getColorOfSide Down = fixFinalCornerLeft (orientCornerAlgorithm (cube, moves) side) side
-  | otherwise                                                      = (cube, moves)
+fixFinalCornerLeft :: (VJRubiksCube, [Move]) -> Side -> Int -> (VJRubiksCube, [Move])
+fixFinalCornerLeft (cube, moves) side index
+  | getNth index (getPieces (lookup Down cube)) /= getColorOfSide Down = fixFinalCornerLeft (orientCornerAlgorithm (cube, moves) side) side index
+  | otherwise                                                          = (cube, moves)
 
 -- True Front
 checkCornerFRUStrict :: VJRubiksCube -> Bool
