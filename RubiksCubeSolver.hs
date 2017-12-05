@@ -965,13 +965,13 @@ solveDownCross (cube, moves) = case checkCross cube Down of
 fixDownCross :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
 fixDownCross (cube, moves)
   | checkCross cube Down       == True = (cube, moves)
-  | checkHorizontalLineNS cube == True = edgeTiltCarouselAlgorithm (cube, moves) Left
-  | checkHorizontalLineEW cube == True = edgeTiltCarouselAlgorithm (cube, moves) Front
+  | checkHorizontalLineNS cube == True = permutationChangeAlgorithm (cube, moves) Left
+  | checkHorizontalLineEW cube == True = permutationChangeAlgorithm (cube, moves) Front
   | checkLFront cube           == True = shortcutLToCrossAlgorithm (cube, moves) Front
   | checkLRight cube           == True = shortcutLToCrossAlgorithm (cube, moves) Left
   | checkLBack cube            == True = shortcutLToCrossAlgorithm (cube, moves) Back
   | checkLLeft cube            == True = shortcutLToCrossAlgorithm (cube, moves) Right
-  | otherwise                          = edgeTiltCarouselAlgorithm (cube, moves) Front
+  | otherwise                          = permutationChangeAlgorithm (cube, moves) Front
 
 checkHorizontalLineNS :: VJRubiksCube -> Bool
 checkHorizontalLineNS cube
@@ -1016,8 +1016,8 @@ checkLLeft cube
   | otherwise                                                            = False
 
 -- F, R, U, R', U', F'
-edgeTiltCarouselAlgorithm :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move])
-edgeTiltCarouselAlgorithm (cube, moves) side = 
+permutationChangeAlgorithm :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move])
+permutationChangeAlgorithm (cube, moves) side = 
   (foldl (\a x -> translateMove a side Down x) cube [8,6,0,7,1,9], moves ++ (map (addMove side Down) [8,6,0,7,1,9]))
 
 -- F, U, R, U', R', F'
@@ -1028,10 +1028,10 @@ shortcutLToCrossAlgorithm (cube, moves) side =
 
 -- Stage 5: Extended Down Cross
 
--- solveDownExtendedCross :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
--- solveDownExtendedCross (cube, moves) = case checkDownExtendedCross cube of
---   True  -> (cube, moves)
---   False -> solveDownExtendedCross (fixDownEdges (cube, moves))
+solveDownExtendedCross :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
+solveDownExtendedCross (cube, moves) = case checkDownExtendedCross cube of
+  True  -> (cube, moves)
+  False -> solveDownExtendedCross (fixDownExtendedCross (cube, moves))
 
 checkDownExtendedCross :: VJRubiksCube -> Bool
 checkDownExtendedCross cube = 
@@ -1043,4 +1043,22 @@ checkDownExtendedCross cube =
               (getNth 7 rightPieces == getColorOfSide Right) &&
               (getNth 7 leftPieces  == getColorOfSide Left)  &&
               (getNth 7 backPieces  == getColorOfSide Back)) &&
-              (checkCross cube Down == True) then True else False  
+              (checkCross cube Down == True) then True else False
+
+fixDownExtendedCross :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
+fixDownExtendedCross (cube, moves) = 
+  let frontPieces = getPieces (lookup Front cube) in
+    let rightPieces = getPieces (lookup Right cube) in
+      let leftPieces = getPieces (lookup Left cube) in
+        let backPieces = getPieces (lookup Back cube) in
+               if (getNth 7 frontPieces == getColorOfSide Front) then edgeTiltCarouselAlgorithm (cube, moves) Front
+          else if (getNth 7 rightPieces == getColorOfSide Right) then edgeTiltCarouselAlgorithm (cube, moves) Right
+          else if (getNth 7 backPieces  == getColorOfSide Back)  then edgeTiltCarouselAlgorithm (cube, moves) Back
+          else if (getNth 7 leftPieces  == getColorOfSide Left)  then edgeTiltCarouselAlgorithm (cube, moves) Left
+          else edgeTiltCarouselAlgorithm (cube, moves) Front
+
+--R, U, U, R', U', R, U', R'
+edgeTiltCarouselAlgorithm :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move])
+edgeTiltCarouselAlgorithm (cube, moves) side = 
+   (foldl (\a x -> translateMove a side Down x) cube [6,0,0,7,1,6,1,7], moves ++ (map (addMove side Down) [6,0,0,7,1,6,1,7]))
+
