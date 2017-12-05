@@ -1185,37 +1185,38 @@ findFinalFace :: VJRubiksCube -> Side
 findFinalFace cube
   | checkCornerFRUStrict cube == False = Front
   | checkCornerFLUStrict cube == False = Right
-  | checkCornerRBUStrict cube == False = Left
   | checkCornerLBUStrict cube == False = Back
+  | checkCornerRBUStrict cube == False = Left
 
 fixFinalCorners :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
 fixFinalCorners (cube, moves) = 
   case findFinalFace cube of
     Front -> fixFinalCornerFront (cube, moves) Front
     Right -> fixFinalCornerRight (cube, moves) Right
-    Left  -> fixFinalCornerLeft (cube, moves) Left
     Back  -> fixFinalCornerBack (cube, moves) Back
+    Left  -> fixFinalCornerLeft (cube, moves) Left
 
 fixFinalCornerFront :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move])
 fixFinalCornerFront (cube, moves) side
-  | checkCornerFRUStrict cube == False = fixFinalCornerFront (orientCornerAlgorithm (cube, moves) side) side
-  | otherwise                          = fixFinalCornerRight (down cube, moves ++ [addMove Front Up 2]) side
+  | getNth 0 (getPieces (lookup Down cube)) == getColorOfSide Down = fixFinalCornerFront (orientCornerAlgorithm (cube, moves) side) side
+  | otherwise                                                      = fixFinalCornerRight (down cube, moves ++ [addMove side Up 2]) side
  
 fixFinalCornerRight :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move])
-fixFinalCornerRight (cube, moves) 
-  | checkCornerFLUStrict cube == False = fixFinalCornerRight (orientCornerAlgorithm (cube, moves) side) side
-  | otherwise                          = fixFinalCornerLeft (down cube, moves ++ [addMove Front Up 2]) side
- 
-fixFinalCornerLeft :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move])
-fixFinalCornerLeft (cube, moves) 
-  | checkCornerRBUStrict cube == False = fixFinalCornerLeft (orientCornerAlgorithm (cube, moves) side) side
-  | otherwise                          = fixFinalCornerBack (down cube, moves ++ [addMove Front Up 2]) side
+fixFinalCornerRight (cube, moves) side
+  | getNth 2 (getPieces (lookup Down cube)) == getColorOfSide Down = fixFinalCornerRight (orientCornerAlgorithm (cube, moves) side) side
+  | otherwise                                                      = fixFinalCornerBack (down cube, moves ++ [addMove side Up 2]) side
  
 fixFinalCornerBack :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move])
-fixFinalCornerBack (cube, moves) 
-  | checkCornerLBUStrict cube == False = fixFinalCornerBack (orientCornerAlgorithm (cube, moves) side) side
-  | otherwise                          = (cube, moves)
- 
+fixFinalCornerBack (cube, moves) side
+  | getNth 8 (getPieces (lookup Down cube)) == getColorOfSide Down = fixFinalCornerBack (orientCornerAlgorithm (cube, moves) side) side
+  | otherwise                                                      = fixFinalCornerLeft (down cube, moves ++ [addMove side Up 2]) side
+
+fixFinalCornerLeft :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move])
+fixFinalCornerLeft (cube, moves) side
+  | getNth 6 (getPieces (lookup Down cube)) == getColorOfSide Down = fixFinalCornerLeft (orientCornerAlgorithm (cube, moves) side) side
+  | otherwise                                                      = (cube, moves)
+
+-- True Front
 checkCornerFRUStrict :: VJRubiksCube -> Bool
 checkCornerFRUStrict cube = 
   let correctColors = map getColorOfSide [Front, Left, Down] in
@@ -1224,6 +1225,7 @@ checkCornerFRUStrict cube =
                          getNth 0 (getPieces (lookup Down cube))] in
       correctColors == currentColors
 
+-- True Right
 checkCornerFLUStrict :: VJRubiksCube -> Bool
 checkCornerFLUStrict cube = 
   let correctColors = map getColorOfSide [Front, Right, Down] in
@@ -1232,14 +1234,7 @@ checkCornerFLUStrict cube =
                          getNth 2 (getPieces (lookup Down cube))] in
       correctColors == currentColors 
 
-checkCornerRBUStrict :: VJRubiksCube -> Bool
-checkCornerRBUStrict cube = 
-  let correctColors = map getColorOfSide [Left, Back, Down] in
-    let currentColors = [getNth 6 (getPieces (lookup Left cube)),
-                         getNth 8 (getPieces (lookup Back cube)),
-                         getNth 6 (getPieces (lookup Down cube))] in
-      correctColors == currentColors 
-
+-- True Back
 checkCornerLBUStrict :: VJRubiksCube -> Bool
 checkCornerLBUStrict cube = 
   let correctColors = map getColorOfSide [Right, Back, Down] in
@@ -1247,6 +1242,15 @@ checkCornerLBUStrict cube =
                          getNth 6 (getPieces (lookup Back cube)),
                          getNth 8 (getPieces (lookup Down cube))] in
       correctColors == currentColors
+
+-- True Left
+checkCornerRBUStrict :: VJRubiksCube -> Bool
+checkCornerRBUStrict cube = 
+  let correctColors = map getColorOfSide [Left, Back, Down] in
+    let currentColors = [getNth 6 (getPieces (lookup Left cube)),
+                         getNth 8 (getPieces (lookup Back cube)),
+                         getNth 6 (getPieces (lookup Down cube))] in
+      correctColors == currentColors 
 
 -- R', D', R, D
 orientCornerAlgorithm :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move])
