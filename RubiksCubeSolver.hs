@@ -13,7 +13,7 @@ import Diagrams.RubiksCube.Move
 
 data Color
   = Blue | Green | Orange | Red | White | Yellow
-  deriving (Eq, Show)
+  deriving (Eq, Show, Ord)
 
 data Side
   = Back | Front | Down | Up | Left | Right
@@ -1110,3 +1110,60 @@ swapClockwiseAdjacentEdgesAlgorithm (cube, moves) side =
 swapOppositeEdgesAlgorithm :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move])
 swapOppositeEdgesAlgorithm (cube, moves) side = 
   (foldl (\a x -> translateMove a side Down x) cube [0,6,0,7,0,6,0,0,7,0,4,0,5,0,4,0,0,5,0], moves ++ (map (addMove side Down) [0,6,0,7,0,6,0,0,7,0,4,0,5,0,4,0,0,5,0]))
+
+
+-- Stage 6  Swap Down Corners
+
+solveDownCorners :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
+solveDownCorners (cube, moves) = 
+  case checkAllCorners cube of
+    True  -> (cube, moves)
+    False -> solveDownCorners (fixDownCorners (cube, moves))
+
+checkAllCorners :: VJRubiksCube -> Bool
+checkAllCorners cube = checkCornerFRU cube && checkCornerFLU cube && checkCornerRBU cube && checkCornerLBU cube
+
+fixDownCorners :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
+fixDownCorners (cube, moves) 
+  | checkCornerFRU cube = swapCornerAlgorithm (cube, moves) Front
+  | checkCornerFLU cube = swapCornerAlgorithm (cube, moves) Right
+  | checkCornerRBU cube = swapCornerAlgorithm (cube, moves) Left
+  | checkCornerLBU cube = swapCornerAlgorithm (cube, moves) Back
+  | otherwise           = swapCornerAlgorithm (cube, moves) Front
+
+checkCornerFRU :: VJRubiksCube -> Bool
+checkCornerFRU cube = 
+  let correctColors = map getColorOfSide [Front, Left, Down] in
+    let currentColors = [getNth 6 (getPieces (lookup Front cube)),
+                         getNth 8 (getPieces (lookup Left cube)),
+                         getNth 0 (getPieces (lookup Down cube))] in
+      sort correctColors == sort currentColors
+
+checkCornerFLU :: VJRubiksCube -> Bool
+checkCornerFLU cube = 
+  let correctColors = map getColorOfSide [Front, Right, Down] in
+    let currentColors = [getNth 8 (getPieces (lookup Front cube)),
+                         getNth 6 (getPieces (lookup Right cube)),
+                         getNth 2 (getPieces (lookup Down cube))] in
+      sort correctColors == sort currentColors 
+
+checkCornerRBU :: VJRubiksCube -> Bool
+checkCornerRBU cube = 
+  let correctColors = map getColorOfSide [Left, Back, Down] in
+    let currentColors = [getNth 6 (getPieces (lookup Left cube)),
+                         getNth 8 (getPieces (lookup Back cube)),
+                         getNth 6 (getPieces (lookup Down cube))] in
+      sort correctColors == sort currentColors 
+
+checkCornerLBU :: VJRubiksCube -> Bool
+checkCornerLBU cube = 
+  let correctColors = map getColorOfSide [Right, Back, Down] in
+    let currentColors = [getNth 8 (getPieces (lookup Right cube)),
+                         getNth 6 (getPieces (lookup Back cube)),
+                         getNth 8 (getPieces (lookup Down cube))] in
+      sort correctColors == sort currentColors 
+
+-- U, R, U', L', U, R', U', L
+swapCornerAlgorithm :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move])
+swapCornerAlgorithm (cube, moves) side = 
+  (foldl (\a x -> translateMove a side Down x) cube [0,6,1,5,0,7,1,4], moves ++ (map (addMove side Down) [0,6,1,5,0,7,1,4]))
