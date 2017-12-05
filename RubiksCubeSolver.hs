@@ -1028,10 +1028,10 @@ shortcutLToCrossAlgorithm (cube, moves) side =
 
 -- Stage 5: Extended Down Cross
 
-solveDownExtendedCross :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
-solveDownExtendedCross (cube, moves) = case checkDownExtendedCross cube of
-  True  -> (cube, moves)
-  False -> solveDownExtendedCross (fixDownExtendedCross (cube, moves))
+-- solveDownExtendedCross :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
+-- solveDownExtendedCross (cube, moves) = case checkDownExtendedCross cube of
+--   True  -> (cube, moves)
+--   False -> solveDownExtendedCross (fixDownExtendedCross (cube, moves))
 
 checkDownExtendedCross :: VJRubiksCube -> Bool
 checkDownExtendedCross cube = 
@@ -1045,20 +1045,69 @@ checkDownExtendedCross cube =
               (getNth 7 backPieces  == getColorOfSide Back)) &&
               (checkCross cube Down == True) then True else False
 
-fixDownExtendedCross :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
-fixDownExtendedCross (cube, moves) = 
+-- fixDownExtendedCross :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
+-- fixDownExtendedCross (cube, moves) = 
+--   let frontPieces = getPieces (lookup Front cube) in
+--     let rightPieces = getPieces (lookup Right cube) in
+--       let leftPieces = getPieces (lookup Left cube) in
+--         let backPieces = getPieces (lookup Back cube) in
+--           if checkFBOppositeEdges cube == True then swapOppositeEdgesAlgorithm cube Front
+--           else if checkLROppositeEdges cube == True then swapOppositeEdgesAlgorithm cube Left
+--           else if checkFrontAdjacentEdge cube == True then swapClockwiseAdjacentEdgesAlgorithm cube Front
+--           else if checkRightAdjacentEdge cube == True then swapClockwiseAdjacentEdgesAlgorithm cube Right
+--           else if checkBackAdjacentEdge cube == True then swapClockwiseAdjacentEdgesAlgorithm cube Back
+--           else if checkLeftAdjacentEdge cube == True then swapClockwiseAdjacentEdgesAlgorithm cube Left
+--           else solveDownExtendedCross (down cube, moves ++ [addMove side Up 2]) 
+
+          --      if (getNth 7 frontPieces == getColorOfSide Front) && (getNth) then edgeTiltCarouselAlgorithm (cube, moves) Front
+          -- else if (getNth 7 rightPieces == getColorOfSide Right) then edgeTiltCarouselAlgorithm (cube, moves) Right
+          -- else if (getNth 7 backPieces  == getColorOfSide Back)  then edgeTiltCarouselAlgorithm (cube, moves) Back
+          -- else if (getNth 7 leftPieces  == getColorOfSide Left)  then edgeTiltCarouselAlgorithm (cube, moves) Left
+          -- else edgeTiltCarouselAlgorithm (cube, moves) Front
+
+checkFBOppositeEdges :: VJRubiksCube -> Bool
+checkFBOppositeEdges cube = 
   let frontPieces = getPieces (lookup Front cube) in
-    let rightPieces = getPieces (lookup Right cube) in
-      let leftPieces = getPieces (lookup Left cube) in
-        let backPieces = getPieces (lookup Back cube) in
-               if (getNth 7 frontPieces == getColorOfSide Front) then edgeTiltCarouselAlgorithm (cube, moves) Front
-          else if (getNth 7 rightPieces == getColorOfSide Right) then edgeTiltCarouselAlgorithm (cube, moves) Right
-          else if (getNth 7 backPieces  == getColorOfSide Back)  then edgeTiltCarouselAlgorithm (cube, moves) Back
-          else if (getNth 7 leftPieces  == getColorOfSide Left)  then edgeTiltCarouselAlgorithm (cube, moves) Left
-          else edgeTiltCarouselAlgorithm (cube, moves) Front
+    let backPieces = getPieces (lookup Back cube) in
+      if (getNth 7 frontPieces == getColorOfSide Back) && (getNth 7 backPieces == getColorOfSide Front) then True
+      else False
+  
+checkLROppositeEdges :: VJRubiksCube -> Bool
+checkLROppositeEdges cube = 
+  let rightPieces = getPieces (lookup Right cube) in
+    let leftPieces = getPieces (lookup Left cube) in
+      if (getNth 7 rightPieces == getColorOfSide Left) && (getNth 7 leftPieces == getColorOfSide Right) then True
+      else False
 
---R, U, U, R', U', R, U', R'
-edgeTiltCarouselAlgorithm :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move])
-edgeTiltCarouselAlgorithm (cube, moves) side = 
-   (foldl (\a x -> translateMove a side Down x) cube [6,0,0,7,1,6,1,7], moves ++ (map (addMove side Down) [6,0,0,7,1,6,1,7]))
+checkFrontAdjacentEdge :: VJRubiksCube -> Bool
+checkFrontAdjacentEdge cube = 
+  let frontPieces = getPieces (lookup Front cube) in
+    let clockwisePieces = getPieces (lookup Right cube) in
+      if (getNth 7 frontPieces == getColorOfSide Right) && (getNth 7 clockwisePieces == getColorOfSide Front) then True
+      else False
 
+checkRightAdjacentEdge :: VJRubiksCube -> Bool
+checkRightAdjacentEdge cube = 
+  let frontPieces = getPieces (lookup Left cube) in
+    let clockwisePieces = getPieces (lookup Front cube) in
+      if (getNth 7 frontPieces == getColorOfSide Front) && (getNth 7 clockwisePieces == getColorOfSide Left) then True
+      else False
+
+checkBackAdjacentEdge :: VJRubiksCube -> Bool
+checkBackAdjacentEdge cube = 
+  let frontPieces = getPieces (lookup Back cube) in
+    let clockwisePieces = getPieces (lookup Left cube) in
+      if (getNth 7 frontPieces == getColorOfSide Left) && (getNth 7 clockwisePieces == getColorOfSide Back) then True
+      else False
+
+checkLeftAdjacentEdge :: VJRubiksCube -> Bool
+checkLeftAdjacentEdge cube = 
+  let frontPieces = getPieces (lookup Right cube) in
+    let clockwisePieces = getPieces (lookup Back cube) in
+      if (getNth 7 frontPieces == getColorOfSide Back) && (getNth 7 clockwisePieces == getColorOfSide Right) then True
+      else False
+-- swapClockwiseAdjacentEdgesAlgorithm :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move])
+-- swapClockwiseAdjacentEdgesAlgorithm (cube, moves) side = 
+
+-- swapOppositeEdgesAlgorithm :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move])
+-- swapOppositeEdgesAlgorithm (cube, moves) side = 
