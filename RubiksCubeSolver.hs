@@ -1257,6 +1257,22 @@ orientCornerAlgorithm :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move]
 orientCornerAlgorithm (cube, moves) side =
   (foldl (\a x -> translateMove a side Down x) cube [7,3,6,2], moves ++ (map (addMove side Down) [7,3,6,2]))
 
+
+-- Stage 8: Finishing Touches
+
+solveFinishingTouches :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
+solveFinishingTouches (cube, moves) = 
+  case cube == solvedCube of
+    True  -> (cube, moves)
+    False -> fixFinalTouches (cube, moves)
+
+fixFinalTouches :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
+fixFinalTouches (cube, moves) = 
+  let frontPieces = getPieces (lookup Front cube) in
+    if (getNth 1 frontPieces /= getColorOfSide Front) then fixFinalTouches (up cube, moves ++ [addMove Front Up 0])
+    else if (getNth 7 frontPieces /= getColorOfSide Front) then fixFinalTouches (down cube, moves ++ [addMove Front Up 2])
+    else (cube, moves)
+
 watDo =
   let r = back (front (right (left solvedCube))) in
   let r1 = solveUpCross (r, []) in
@@ -1265,4 +1281,5 @@ watDo =
   let r4 = solveDownCross r3 in
   let r5 = solveDownExtendedCross r4 in
   let r6 = solveDownCorners r5 in
-    solveFinalCorners r6
+  let r7 = solveFinalCorners r6 in
+    solveFinishingTouches r7
