@@ -1028,10 +1028,10 @@ shortcutLToCrossAlgorithm (cube, moves) side =
 
 -- Stage 5: Extended Down Cross
 
--- solveDownExtendedCross :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
--- solveDownExtendedCross (cube, moves) = case checkDownExtendedCross cube of
---   True  -> (cube, moves)
---   False -> solveDownExtendedCross (fixDownExtendedCross (cube, moves))
+solveDownExtendedCross :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
+solveDownExtendedCross (cube, moves) = case checkDownExtendedCross cube of
+  True  -> (cube, moves)
+  False -> solveDownExtendedCross (fixDownExtendedCross (cube, moves))
 
 checkDownExtendedCross :: VJRubiksCube -> Bool
 checkDownExtendedCross cube = 
@@ -1045,25 +1045,19 @@ checkDownExtendedCross cube =
               (getNth 7 backPieces  == getColorOfSide Back)) &&
               (checkCross cube Down == True) then True else False
 
--- fixDownExtendedCross :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
--- fixDownExtendedCross (cube, moves) = 
---   let frontPieces = getPieces (lookup Front cube) in
---     let rightPieces = getPieces (lookup Right cube) in
---       let leftPieces = getPieces (lookup Left cube) in
---         let backPieces = getPieces (lookup Back cube) in
---           if checkFBOppositeEdges cube == True then swapOppositeEdgesAlgorithm cube Front
---           else if checkLROppositeEdges cube == True then swapOppositeEdgesAlgorithm cube Left
---           else if checkFrontAdjacentEdge cube == True then swapClockwiseAdjacentEdgesAlgorithm cube Front
---           else if checkRightAdjacentEdge cube == True then swapClockwiseAdjacentEdgesAlgorithm cube Right
---           else if checkBackAdjacentEdge cube == True then swapClockwiseAdjacentEdgesAlgorithm cube Back
---           else if checkLeftAdjacentEdge cube == True then swapClockwiseAdjacentEdgesAlgorithm cube Left
---           else solveDownExtendedCross (down cube, moves ++ [addMove side Up 2]) 
-
-          --      if (getNth 7 frontPieces == getColorOfSide Front) && (getNth) then edgeTiltCarouselAlgorithm (cube, moves) Front
-          -- else if (getNth 7 rightPieces == getColorOfSide Right) then edgeTiltCarouselAlgorithm (cube, moves) Right
-          -- else if (getNth 7 backPieces  == getColorOfSide Back)  then edgeTiltCarouselAlgorithm (cube, moves) Back
-          -- else if (getNth 7 leftPieces  == getColorOfSide Left)  then edgeTiltCarouselAlgorithm (cube, moves) Left
-          -- else edgeTiltCarouselAlgorithm (cube, moves) Front
+fixDownExtendedCross :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
+fixDownExtendedCross (cube, moves) = 
+  let frontPieces = getPieces (lookup Front cube) in
+    let rightPieces = getPieces (lookup Right cube) in
+      let leftPieces = getPieces (lookup Left cube) in
+        let backPieces = getPieces (lookup Back cube) in
+          if checkFBOppositeEdges cube == True then swapOppositeEdgesAlgorithm (cube, moves) Front
+          else if checkLROppositeEdges cube == True then swapOppositeEdgesAlgorithm (cube, moves) Left
+          else if checkFrontAdjacentEdge cube == True then swapClockwiseAdjacentEdgesAlgorithm (cube, moves) Front
+          else if checkRightAdjacentEdge cube == True then swapClockwiseAdjacentEdgesAlgorithm (cube, moves) Right
+          else if checkBackAdjacentEdge cube == True then swapClockwiseAdjacentEdgesAlgorithm (cube, moves) Back
+          else if checkLeftAdjacentEdge cube == True then swapClockwiseAdjacentEdgesAlgorithm (cube, moves) Left
+          else solveDownExtendedCross (down cube, moves ++ [addMove Down Up 2]) 
 
 checkFBOppositeEdges :: VJRubiksCube -> Bool
 checkFBOppositeEdges cube = 
@@ -1106,8 +1100,13 @@ checkLeftAdjacentEdge cube =
     let clockwisePieces = getPieces (lookup Back cube) in
       if (getNth 7 frontPieces == getColorOfSide Back) && (getNth 7 clockwisePieces == getColorOfSide Right) then True
       else False
--- swapClockwiseAdjacentEdgesAlgorithm :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move])
--- swapClockwiseAdjacentEdgesAlgorithm (cube, moves) side = 
 
--- swapOppositeEdgesAlgorithm :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move])
--- swapOppositeEdgesAlgorithm (cube, moves) side = 
+-- R, U, R', U, R, U, U, R', U
+swapClockwiseAdjacentEdgesAlgorithm :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move])
+swapClockwiseAdjacentEdgesAlgorithm (cube, moves) side = 
+  (foldl (\a x -> translateMove a side Down x) cube [6,0,7,0,6,0,0,7,0], moves ++ (map (addMove side Down) [6,0,7,0,6,0,0,7,0]))
+
+-- U, R, U, R', U, R, U, U, R', U, L, U, L', U, L, U, U, L', U
+swapOppositeEdgesAlgorithm :: (VJRubiksCube, [Move]) -> Side -> (VJRubiksCube, [Move])
+swapOppositeEdgesAlgorithm (cube, moves) side = 
+  (foldl (\a x -> translateMove a side Down x) cube [0,6,0,7,0,6,0,0,7,0,4,0,5,0,4,0,0,5,0], moves ++ (map (addMove side Down) [0,6,0,7,0,6,0,0,7,0,4,0,5,0,4,0,0,5,0]))
