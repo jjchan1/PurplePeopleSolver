@@ -1273,9 +1273,9 @@ fixFinalTouches (cube, moves) =
     else if (getNth 7 frontPieces /= getColorOfSide Front) then fixFinalTouches (down cube, moves ++ [addMove Front Up 2])
     else (cube, moves)
 
-watDo =
-  let r = back (front (right (left solvedCube))) in
-  let r1 = solveUpCross (r, []) in
+solve :: (VJRubiksCube, [Move]) -> (VJRubiksCube, [Move])
+solve (cube, moves) =
+  let r1 = solveUpCross (cube, moves) in
   let r2 = solveUpCorners r1 in
   let r3 = solveMiddleLayer r2 in
   let r4 = solveDownCross r3 in
@@ -1283,3 +1283,15 @@ watDo =
   let r6 = solveDownCorners r5 in
   let r7 = solveFinalCorners r6 in
     solveFinishingTouches r7
+
+-- watDo :: (VJRubiksCube, [Move])
+-- watDo =
+--   let r = back (front (right (left solvedCube))) in
+--   let r1 = solveUpCross (r, []) in
+--   let r2 = solveUpCorners r1 in
+--   let r3 = solveMiddleLayer r2 in
+--   let r4 = solveDownCross r3 in
+--   let r5 = solveDownExtendedCross r4 in
+--   let r6 = solveDownCorners r5 in
+--   let r7 = solveFinalCorners r6 in
+--     solveFinishingTouches r7
