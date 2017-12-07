@@ -1,18 +1,8 @@
 module Types where
--- (Color, Side, Piece, Face, VJRubiksCube,solvedRubiksCube,solvedCube) where
 
 import Prelude hiding (Left, Right)
-import System.Random
-import Data.List
-
-import Diagrams.Core.Types
-import Diagrams.Path
 import Diagrams.Prelude hiding (Color, up, up', down, down', left, left', right, right', front, front', back, back')
-import Diagrams.Backend.SVG.CmdLine
-
 import Diagrams.RubiksCube.Model hiding (Side)
-import Diagrams.RubiksCube.Draw hiding (solvedRubiksCube)
-import Diagrams.RubiksCube.Move
 
 data Color
   = Blue | Green | Orange | Red | White | Yellow
