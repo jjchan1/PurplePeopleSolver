@@ -15,6 +15,6 @@ __How to run:__
 * Download repository and place all files into one folder.
 * In Command Prompt/Terminal, navigate to the project folder.
 * Run _ghc --make Main.hs_
-* Run _Main -o solution.svg -w 10000 -h 500"_
+* Run _Main -o solution.svg -w 10000 -h 500_
   * The arguments for -w and -h can be adjusted
   * The solution will be called solution.svg and will be in the project folder.
